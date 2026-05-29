@@ -1,20 +1,25 @@
 # SQLAlchemy
 
 ## Core
+
 O core é o componente mais básico do SQLAlchemy (núcleo). Responsável por criar conexão com o banco de dados, fazer buscas e definir tipos.
 
-1. Engine
+1.Engine
+
 - **Connection**: Interface para se comunicar com o banco
 - **Dialect**: Mecanismos específicos para cada banco de dados
 - **Pool**: Deixa conexões em memória para ser mais fácil reutilizar
 
-2. SQL Expression Language
+2.SQL Expression Language
+
 Construções em Python para representar SQL
 
-3. Schema/Types
+3.Schema/Types
+
 Construções em python que representam tabelas, colunas e tipos de dados
 
 ### Engine
+
 É uma fábrica de conexões com o banco de dados. O objetivo dela é que de forma dinâmica podemos nos comunicar com diferentes drivers de banco de dados usando dialetos específicos para cada banco de dados.
 
 ```mermaid
@@ -32,6 +37,7 @@ engine = create_engine('sqlite://') # em memória, para arquivos, usar equivalen
 ```
 
 ### Dialetos
+
 A `engine` fabrica uma conexão com a base de dados específica usando os dialetos. Dialetos são chamadas diretas para os drivers específicos para databases específicos.
 
 Por exemplo, o SQLAlchemy suporta nativamente:
@@ -45,6 +51,7 @@ Por exemplo, o SQLAlchemy suporta nativamente:
 Contando com diversas implementações via `plugins` como CockroachDB, Firebird, Amazon Redshift, ...
 
 ### Conexão
+
 Com a engine conhecendo o dialeto especificado para conexão, ela pode iniciar a comunicação com o banco:
 
 Exemplo 02:
@@ -61,9 +68,11 @@ connection.close()
 ```
 
 ### Pool
+
 Uma instrução relativamente cara de `IO` é a criação da conexão com o banco de dados. Por esse motivo, o sqlalchemy armazena as conexões em um "reservatório" de conexões chamado `pool`
 
 ### Transação
+
 Uma transação em um banco de dados é uma operação tratada como uma unidade de trabalho indivisível. **ACID** é uma sigla para as quatro principais características que definem uma transação:
 
 - **Atomicidade**: cada instrução em uma transação (leitura, gravação, atualização ou exclusão de dados) é tratada como uma única unidade. Ou as instruções são todas executadas ou nenhuma é executada.
@@ -110,6 +119,7 @@ async with engine.connect() as conn:
 ```
 
 ### Result
+
 O resultado obtido no execute é um objeto especial chamado **Result**. Ele implementa diversos métodos, além de ser um iterável. Alguns métodos úteis:
 
 - `.fetchone()`: pega o primeiro
@@ -131,6 +141,7 @@ with engine.connect() as conn:
 ```
 
 ### Schemas e Types
+
 Os metadados das tabelas podem ser descritos por Schemas (exemplo: nome das colunas) e seus determinados tipos
 
 Exemplo 07:
@@ -154,6 +165,7 @@ metadata.create_all(engine)
 ```
 
 ### Reflection
+
 As funções de inspeção são agregadas a construção de schemas, para evitar a criação dos metadados em um banco de já existe:
 
 Exemplo 08:
@@ -170,6 +182,7 @@ print(comments.columns)
 ```
 
 ### SQL Expression Language
+
 Até o momento, todas as operações foram feitas com text() e SQL bruto. O **Core** tem um grupo de funções e objetos que podem ajudar a montar SQL:
 
 - **DQL**: Data Query Language
@@ -178,6 +191,7 @@ Até o momento, todas as operações foram feitas com text() e SQL bruto. O **Co
 Usado em conjunto com os schemas.
 
 #### DQL
+
 Uma das partes mais importantes dentro dos bancos de dados é a busca pelos dados (chamado de Query). O SQLAlchemy tem um sistema completo e extenso sobre a criação de queries. Começando pelo básico, temos o **select()**:
 
 ```python
@@ -187,6 +201,7 @@ print(stmt)
 ```
 
 ##### CompoundSelect
+
 O resultado do select é um builder, com ele podemos encadear comandos e fazer uma busca mais complexa:
 
 ```python
@@ -200,6 +215,7 @@ stmt = (
 ```
 
 #### DML
+
 Quando precisamos manipular dados no SQL, usamos algumas das seguintes instruções:
 
 - **delete**: remover registros
@@ -207,6 +223,7 @@ Quando precisamos manipular dados no SQL, usamos algumas das seguintes instruç�
 - **update**: atualizar registros
 
 ##### Insert
+
 ```python
 stmt = insert(comments).values(
     name='lucas',
@@ -217,6 +234,7 @@ stmt = insert(comments).values(
 ```
 
 ##### Update
+
 ```python
 stmt = (
     update(comments)
@@ -230,6 +248,7 @@ stmt = (
 ```
 
 ##### Delete
+
 ```python
 stmt = delete(comments).where(
     comments.c.name == 'lucas',
@@ -303,6 +322,7 @@ class Comment:
 ```
 
 ### Session
+
 A `session` faz o papel da "connection" do core, mas retorna objetos ORM na query.
 
 
