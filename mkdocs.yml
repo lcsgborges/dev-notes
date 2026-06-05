@@ -1,7 +1,7 @@
-site_name: Notes
-site_url: https://lcsgborges.github.io/notes/
-repo_name: notes
-repo_url: https://github.com/lcsgborges/notes
+site_name: Dev Notes
+site_url: https://lcsgborges.github.io/dev-notes/
+repo_name: dev-notes
+repo_url: https://github.com/lcsgborges/dev-notes
 theme:
   name: material
   features:
