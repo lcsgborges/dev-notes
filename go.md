@@ -2,12 +2,16 @@
 
 > Documentação: https://go.dev/doc/
 
-## Instalações
+---
+
+## Instalações de ferramentas úteis
 
 ```bash
 go install golang.org/x/tools/gopls@latest # LSP
 go install honnef.co/go/tools/cmd/staticcheck@latest # Linter
 ```
+
+---
 
 ## Estrutura lógica da linguagem Go
 
@@ -37,6 +41,7 @@ func main() {
 
 A função `main` é o ponto de entrada da aplicação, ou seja, é onde a execução do programa começa.
 
+---
 
 ## Hello World em Go
 
@@ -49,6 +54,8 @@ func main() {
 	fmt.Println("Hello, World!")
 }
 ```
+
+---
 
 ## Compilação em Go
 
@@ -69,6 +76,8 @@ GOOS=windows GOARCH=amd64 go build main.go -o main.exe
 ```
 
 Se quisermos testar o código rapidamente, podemos executar o comando `go run` para executar nosso código, mas o que ele faz por debaixo do pano é o seguinte: `Builda -> Executa o código -> Deleta o executável`. Para rodar, basta passar o comando e o nome do arquivo, exemplo: `go run main.go`
+
+---
 
 ## Nomes públicos e privados
 
@@ -128,3 +137,101 @@ No exemplo acima, temos uma função `mult2` que recebe um número e seu retorno
 Essa função que consegue enxergar o valor acima, por exemplo `func() {return x * 2}`, ele enxerga o x da função `mult2`. Isso é chamado de `Closure Function`.
 
 Ainda no exemplo de cima, temos uma função anônima dentro da `mult2`. Percebe-se que toda `closure function` é uma `anonymous function`, mas o contrário nem sempre é válido.
+
+---
+
+## Variáveis em Go
+
+Em Go, as variáveis podem ser declaradas em **escopo de função** ou **escopo de pacote**. As funções em escopo de função são vistas apenas dentro daquela função e as de escpo de pacote são consideradas **variáveis globais** no pacote.
+
+Ainda podemos declarar variáveis de algumas formas:
+
+```go
+var x int = 10 // Jeito tradicional
+var x = 10 // Com inferência de tipo, o compilador sabe o tipo da variável ao compilar
+x := 10 // Short syntax (apenas em escopo de função, em escopo de pacote não vai dar certo)
+
+var name, lastname string // Variáveis do mesmo tipo 'string' sem iniciar os valores
+```
+
+Não podemos declarar apenas como `var name`, pois nesse caso, o compilador não sabe o tipo da variável. Na mesma linha, podemos declarar variáveis de tipos diferentes, caso elas já sejam inicializadas com valor: `var name, age = "João", 10`.
+
+---
+
+## Tipos em Go
+
+Em Go, temos alguns tipos bem comuns:
+
+### Inteiros com sinal
+
+- `int`: é o padrão e depende da arquitetura, podendo ser int32 ou int64
+- `int8`
+- `int16`
+- `int32` = `rune`
+- `int64`
+
+### Inteiros sem sinal (unsigned, ou seja, positivos apenas)
+
+- `uint`: segue o mesmo padrão da arquitetura do int
+- `uint8` = `byte`
+- `uint16`
+- `uint32`
+- `uint64`
+
+### Números decimais
+
+- `float32`
+- `float64`
+
+### Números complexos
+
+- `complex64`
+- `complex128`
+
+### Strings
+
+- `string`
+
+### Booleanos
+
+- `bool`
+
+### Casting de tipos
+
+Podemos ainda transformar tipos em outros, caso seja possível, exemplo:
+
+```go
+func main() {
+    var x = 10
+    var y = float32(10)
+}
+```
+
+No exemplo acima, estamos pegando um tipo `int` e transformando ele em `float32`
+
+Com strings, pegamos o `int` e pegamos o código dele em ASCII, exemplo: `string(65) = "A"`
+
+---
+
+## Constantes em Go
+
+Em Go, as constantes não podem ter seus valores alterados depois de inicializadas e não podem ser usadas com **short syntax**: `const x int = 10`
+
+Apenas alguns tipos podem ser constantes, geralmente valores numéricos, strings e booleanos.
+
+---
+
+## Arrays em Go
+
+Em Go, arrays são estruturas sequencias em memória. Os arrays precisam ter tamanho fixo e não podem ter seu tamanho alterado ao decorrer do código. Além disso, o valor do tamanho do array precisa ser uma `literal constant, e.g: 10` ou declarado com `const`, exemplo: 
+
+```go
+func main() {
+	const x = 10
+	arr := [x]int{}
+}
+```
+
+Dessa forma é válida, pois x é uma constante. Outra coisa, os valores podem ou não ser inicializados na definição do array, sendo possível alterar esses valores depois. Podemos também passar apenas um valor específico pra uma posição especifíca, exemplo: `arr := [10]int{5: 200}`, nesse caso, `arr[5] = 200`
+
+---
