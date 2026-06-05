@@ -17,8 +17,8 @@ Java é uma linguagem orientada a objetos, sendo uma linguagem de pré-compilaç
 
 ```mermaid
 flowchart LR
-    Programa .java -->| Pré compilação feita pelo javac (transforma .java em .class)| Bytecode 
-    Bytecode --> | Compilação just-in-time (JIT) | Código de máquina
+    A["Programa .java"] -->|Pré-compilação feita pelo javac<br/>transforma .java em .class| B["Bytecode .class"]
+    B -->|Compilação just-in-time<br/>JIT| C["Código de máquina"]
 ```
 
 Java possui um conceito WORA (write once run anywhere).
@@ -61,3 +61,85 @@ O Java se subdivide em componentes de desenvolvimento (JDK) e de execução (JRE
 
 - É composta de uma JVM e por um conjunto de bibliotecas que permite a execução de softwares em Java
 - Apenas permite a execução de programas, ou seja, é necessário o programa Java compilado pela JDK gerando os arquivos `.class`
+
+---
+
+## Hello World em Java
+
+```java
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello World!");
+    }
+}
+```
+
+> O `static` em Java é diferente do `static` em C. Em java significa que a classe pode usar esse atributo/método sem instanciar de fato a classe, já em C, serve para usar o valor da variável atual caso já tenha sido inicializada em outro momento no código.
+
+---
+
+## Tipos primitivos em Java
+
+Os tipos primitivos em Java são:
+
+| Tipo | Tamanho | Valor Padrão |
+| :--: | :-----: | :----------: |
+| byte | 1 byte | 0 |
+| short | 2 bytes | 0 |
+| int | 4 bytes | 0 |
+| long | 8 bytes | 0L |
+| float | 4 bytes | 0.0f |
+| double | 8 bytes | 0.0 |
+| char | 1 byte | '\u0000' |
+| bool | 1 bit | false |
+
+Temos ainda outros tipos, como `String` que nesse caso é uma classe, mas podemos ter `String nome = "Lucas";`
+
+O padrão de variáveis em Java é o camelCase (ex: `myFirstVar`) e para classes usamos o padrão PascalCase (ex: `MyFirstClass`)
+
+---
+
+## Separador de Decimais
+
+Em Java, o separador de decimais é o padrão da linguagem da máquina, para setarmos um valor em específico, podemos usar o `Locale`:
+
+```java
+import java.util.Locale
+
+public class Main {
+    public static void main(String[] args) {
+        Locale.setDefault(Locale.US); // Nesse caso, vai usar o separador padrão dos US (".")
+    }
+}
+```
+
+---
+
+## Entrada de dados em Java
+
+Utilizamos o `Scanner` para ler algo do teclado e os métodos `nextInt`, `nextLine()`, e outros mais
+
+```java
+import java.util.Scanner
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int num = sc.nextInt();
+        System.out.println("Número: " + num); // Exemplo de concatenação em java (podemos usar o printf e formatar igual em C)
+        sc.close();
+    }
+}
+
+```
+
+---
+
+## Casting de variáveis
+
+Podemos fazer o casting de variáveis em Java, imagina que recebemos um double, mas queremos transformar esse valor em int:
+
+```java
+double a = 10.0;
+int b = (int) a;
+```
