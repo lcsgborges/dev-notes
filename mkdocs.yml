@@ -1,0 +1,52 @@
+site_name: Notes
+site_url: https://lcsgborges.github.io/notes/
+repo_name: notes
+repo_url: https://github.com/lcsgborges/notes
+theme:
+  name: material
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.tracking
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.prune
+    - navigation.top
+    - content.code.copy
+  font:
+    text: Roboto
+    code: Roboto Mono
+  language: pt-BR
+  palette:
+    scheme: default
+    primary: blue grey
+nav:
+  - Home: index.md
+  - Linguagens:
+    - C:
+      - OpenMP: openmp.md
+    - Go: go.md
+    - Java: java.md
+    - Python:
+      - Alembic: alembic.md
+      - Pillow: pillow.md
+      - SQLAlchemy: sqlalchemy.md
+      - Type Hints: types-hints-py.md
+  - Devops:
+    - Docker: docker.md
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
