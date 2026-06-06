@@ -65,7 +65,9 @@ int omp_get_thread_num();
 // Indica o número de threads a executar na região paralela
 void omp_set_num_threads(int num_threads);
 
-// Retorna o número de threads que estão executando no momento (por padrão é o número de core do processador)
+// Retorna o número de threads que estão executando no momento (por padrão é o 
+// número de core do processador)
+
 // Podemos alterar esse padrão usando: export OMP_NUM_THREADS=4 (por exemplo)
 int omp_get_num_threads();
 ```
@@ -75,7 +77,9 @@ int omp_get_num_threads();
 Algumas diretivas comuns OpenMP:
 
 ```c
-// Cria uma região paralela. Define variáveis privadas e compartilhas entre as threads
+// Cria uma região paralela. Define variáveis privadas e compartilhas entre 
+// as threads
+
 // Variável privada é diferente para cada thread
 #pragma omp parallel private(...) shared(...)
 { // precisa do bloco na linha debaixo

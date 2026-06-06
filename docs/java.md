@@ -108,7 +108,8 @@ import java.util.Locale
 
 public class Main {
     public static void main(String[] args) {
-        Locale.setDefault(Locale.US); // Nesse caso, vai usar o separador padrão dos US (".")
+        Locale.setDefault(Locale.US); 
+        // Nesse caso, vai usar o separador padrão dos US (".")
     }
 }
 ```
@@ -126,7 +127,8 @@ public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int num = sc.nextInt();
-        System.out.println("Número: " + num); // Exemplo de concatenação em java (podemos usar o printf e formatar igual em C)
+        System.out.println("Número: " + num);
+        // Exemplo de concatenação em java (se usar o printf é igual em C)
         sc.close();
     }
 }

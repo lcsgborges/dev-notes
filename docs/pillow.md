@@ -12,10 +12,10 @@ ROOT_FOLDER = Path(__file__).parent
 ORIGINAL_IMAGE = ROOT_FOLDER / 'original.jpg'
 NEW_IMAGE = ROOT_FOLDER / 'new.jpg'
 
-# pil_img = Image.open(ORIGINAL_IMAGE) -> Podemos usar gerenciador de contexto aqui:
+# pil_img = Image.open(ORIGINAL_IMAGE) ou com gerenciador de contexto:
 with Image.open(ORIGINAL_NAME) as pil_img:
     widht, height = pil_img.size
-    exif = pil_img.info['exif'] # Caso precisamos das informações (se não precisamos disso, podemos ignorar)
+    exif = pil_img.info['exif'] # exif = infos da imagem
     
     # nova imagem = 512 x 512
     new_widht = 256

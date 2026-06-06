@@ -70,8 +70,9 @@ Nesse caso, passamos a Flag `-o` que significa _output_ e nosso arquivo executá
 Além disso, em Go, conseguimos fazer Cross-Compilation, ou seja, podemos compilar um arquivo `.go` para outro sistema operacional diferente do nosso, passando o sistema operacional em que será executado e a arquitetura do processador, por exemplo:
 
 ```bash
-# Vamos supor que estamos em uma máquina Linux e queremos compilar nosso código para Windows,
-# podemos simplesmente passar o seguinte comando:
+# Vamos supor que estamos em uma máquina Linux e queremos compilar nosso 
+# código para Windows, podemos simplesmente passar o seguinte comando:
+
 GOOS=windows GOARCH=amd64 go build main.go -o main.exe
 ```
 
@@ -148,10 +149,10 @@ Ainda podemos declarar variáveis de algumas formas:
 
 ```go
 var x int = 10 // Jeito tradicional
-var x = 10 // Com inferência de tipo, o compilador sabe o tipo da variável ao compilar
-x := 10 // Short syntax (apenas em escopo de função, em escopo de pacote não vai dar certo)
+var x = 10 // Com inferência de tipo
+x := 10 // Short syntax => válido apenas em escopo de função
 
-var name, lastname string // Variáveis do mesmo tipo 'string' sem iniciar os valores
+var name, lastname string // Variáveis do mesmo tipo 'string' sem iniciar valor
 ```
 
 Não podemos declarar apenas como `var name`, pois nesse caso, o compilador não sabe o tipo da variável. Na mesma linha, podemos declarar variáveis de tipos diferentes, caso elas já sejam inicializadas com valor: `var name, age = "João", 10`.

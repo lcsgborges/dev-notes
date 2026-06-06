@@ -124,7 +124,8 @@ from modules.posts.models import Post
 
 target_metadata = Base.metadata
 
-# podemos criar um arquivo para jogar todos os models lá e trazemos todos de uma vez, exemplo: registry.py com todos imports dos models
+# podemos criar um arquivo para jogar todos os models lá e trazemos todos de 
+# uma vez, exemplo: registry.py com todos imports dos models
 ```
 
 Agora, podemos fazer uma migração automática com o alembic:

@@ -33,7 +33,9 @@ Exemplo 01:
 from sqlalchemy import create_engine
 
 # Factory
-engine = create_engine('sqlite://') # em memória, para arquivos, usar equivalente a 'sqlite:///database.db'
+engine = create_engine('sqlite://')
+
+# em memória, para arquivos, usar equivalente a 'sqlite:///database.db'
 ```
 
 ### Dialetos
@@ -59,7 +61,8 @@ Exemplo 02:
 ```python
 from sqlalchemy import create_engine
 
-engine = create_engine('sqlite:///database.db', echo=True) # echo é para disparar logs no terminal
+engine = create_engine('sqlite:///database.db', echo=True)
+# echo é para disparar logs no terminal
 
 connection = engine.connect()
 print(connection.connection.dbapi_connection)
@@ -197,7 +200,8 @@ Uma das partes mais importantes dentro dos bancos de dados é a busca pelos dado
 ```python
 stmt = select(comments)
 print(stmt)
-# SELECT comments.id, comments.name, comments.comment, comments.live, comments.created_at FROM comments
+# SELECT comments.id, comments.name, comments.comment, comments.live, 
+# comments.created_at FROM comments
 ```
 
 ##### CompoundSelect
@@ -318,7 +322,9 @@ class Comment:
     name: Mapped[str]
     comment: Mapped[str]
     live: Mapped[str]
-    created_at: Mapped[datetime] = mapped_column(init=False, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        init=False, server_default=func.now()
+    )
 ```
 
 ### Session
