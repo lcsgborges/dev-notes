@@ -1,23 +1,23 @@
 # Golang
 
-> Documentação: https://go.dev/doc/
+> Documentação: [https://go.dev/doc/](https://go.dev/doc/)
 
 ---
 
 ## Instalações de ferramentas úteis
 
-```go
-func main() {
-    var x int8 = 10
-    if x < 5 {
-        fmt.Println("Menor que 5")
-    } else if x < 10 {
-        fmt.Println("Menor que 10")
-    } else {
-        fmt.Println("Maior ou igual a 10")
-    }
-}
+```bash
+go install golang.org/x/tools/gopls@latest # LSP
+go install honnef.co/go/tools/cmd/staticcheck@latest # Linter
 ```
+
+---
+
+## Estrutura lógica da linguagem Go
+
+### Módulos
+
+Em Go, um módulo representa o projeto ou biblioteca como um todo, definido pelo arquivo `go.mod`, contendo um ou mais pacotes e suas dependências.
 
 Ele agrupa os pacotes do projeto, controla o caminho de importação, gerencia as dependências externas e define a versão do Go utilizada no projeto.
 
