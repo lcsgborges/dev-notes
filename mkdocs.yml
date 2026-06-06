@@ -27,16 +27,19 @@ nav:
   - Home: index.md
   - Linguagens:
     - C:
-      - OpenMP: openmp.md
-    - Go: go.md
-    - Java: java.md
+      - OpenMP: c/openmp.md
+    - Go:
+      - Primeiros Passos: go/go.md
+      - Exercícios: go/exercicios_basicos_go.md
+    - Java: 
+      - Primeiros Passos: java/java.md
     - Python:
-      - Alembic: alembic.md
-      - Pillow: pillow.md
-      - SQLAlchemy: sqlalchemy.md
-      - Type Hints: types-hints-py.md
+      - Alembic: python/alembic.md
+      - Pillow: python/pillow.md
+      - SQLAlchemy: python/sqlalchemy.md
+      - Type Hints: python/types-hints-py.md
   - Devops:
-    - Docker: docker.md
+    - Docker: devops/docker.md
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
