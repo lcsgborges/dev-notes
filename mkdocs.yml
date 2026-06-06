@@ -13,7 +13,6 @@ theme:
     - navigation.sections
     - navigation.expand
     - navigation.path
-    - navigation.prune
     - navigation.top
     - content.code.copy
   font:
