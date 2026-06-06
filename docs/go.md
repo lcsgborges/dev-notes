@@ -6,18 +6,18 @@
 
 ## Instalações de ferramentas úteis
 
-```bash
-go install golang.org/x/tools/gopls@latest # LSP
-go install honnef.co/go/tools/cmd/staticcheck@latest # Linter
+```go
+func main() {
+    var x int8 = 10
+    if x < 5 {
+        fmt.Println("Menor que 5")
+    } else if x < 10 {
+        fmt.Println("Menor que 10")
+    } else {
+        fmt.Println("Maior ou igual a 10")
+    }
+}
 ```
-
----
-
-## Estrutura lógica da linguagem Go
-
-### Módulos
-
-Em Go, um módulo representa o projeto ou biblioteca como um todo, definido pelo arquivo `go.mod`, contendo um ou mais pacotes e suas dependências.
 
 Ele agrupa os pacotes do projeto, controla o caminho de importação, gerencia as dependências externas e define a versão do Go utilizada no projeto.
 
@@ -92,7 +92,7 @@ package main
 import io "fmt"
 
 func main(
-	io.Println("Hello")
+    io.Println("Hello")
 )
 ```
 
@@ -108,7 +108,7 @@ Uma função em Go é similar as outras linguagens, recebe um argumento, process
 
 ```go
 func multi(a int, b int) int {
-	return a * b
+    return a * b
 }
 ```
 
@@ -123,13 +123,13 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Printf("Result = %d\n", mult2(5))
+    fmt.Printf("Result = %d\n", mult2(5))
 }
 
 func mult2 (x int) func() int {
-	return func() int {
-		return x * 2
-	}
+    return func() int {
+        return x * 2
+    }
 }
 ```
 
@@ -228,11 +228,82 @@ Em Go, arrays são estruturas sequencias em memória. Os arrays precisam ter tam
 
 ```go
 func main() {
-	const x = 10
-	arr := [x]int{}
+    const x = 10
+    arr := [x]int{}
 }
 ```
 
 Dessa forma é válida, pois x é uma constante. Outra coisa, os valores podem ou não ser inicializados na definição do array, sendo possível alterar esses valores depois. Podemos também passar apenas um valor específico pra uma posição especifíca, exemplo: `arr := [10]int{5: 200}`, nesse caso, `arr[5] = 200`
+
+---
+
+## Loop em Go
+
+No Go, só temos o loop `for`, não exite `while` na linguagem. Segue o padrão do C, mas não tem "()". Exemplo:
+
+```go
+func main() {
+    sum := 0
+    for i := 0; i < 10; i++ {
+        fmt.Println("Sum = ", sum)
+    }
+}
+```
+
+Entretanto, todos os _statement_ são opcionais, podemos ter um laço com apenas `for {}` que seria equivalente a fazer um `while True`. Nesses casos, podemos usar a palavra `break` para sair do laço
+
+Temos uma outra palavra reservada `range`, muito parecida com a do python. O `range` retorna o índice e também o elemento que ocupa aquele índice. Caso queremos pegar apenas o valor do elemento, usamos um _blank identifier_ para ignorar o índice:
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+    fruits := [5]string {"apple", "banana", "orange", "kiwi", "lemon"}
+    for _, fruit := range fruits {
+        fmt.Println(fruit)
+    }
+}
+```
+
+Podemos usar o `range` para iterar um "x" inteiro:
+
+```go
+func main() {
+    for range 10 {
+        fmt.Println("Hello") // vai printar "Hello" 10x
+    }
+}
+```
+
+---
+
+## Condicionais em Go
+
+Os condicionais em Go são padrão e parecidos com qualquer linguagem: `if`, `else if` e `else`, com uma única diferença que é poder declarar uma variável dentro do `if`, útil em casos de tratamento de erro:
+
+``` go
+func main() {
+    if num := math.Sqrt(4); num < 5 {
+        fmt.Println("Menor que 5")
+    }
+}
+```
+
+No exemplo acima, declaramos uma variável que no fim vai ter o valor `num = 4`, menor que 5 e por isso entra no bloco do `if`
+
+```go
+func main() {
+    var x int8 = 10
+    if x < 5 {
+        fmt.Println("Menor que 5")
+    } else if x < 10 {
+        fmt.Println("Menor que 10")
+    } else {
+        fmt.Println("Maior ou igual a 10")
+    }
+}
+```
 
 ---
