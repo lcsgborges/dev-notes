@@ -4,6 +4,13 @@ repo_name: dev-notes
 repo_url: https://github.com/lcsgborges/dev-notes
 theme:
   name: material
+  font:
+    text: Roboto
+    code: Roboto Mono
+  language: pt-BR
+  palette:
+    scheme: default
+    primary: blue grey
   features:
     - navigation.instant
     - navigation.instant.progress
@@ -15,13 +22,6 @@ theme:
     - navigation.path
     - navigation.top
     - content.code.copy
-  font:
-    text: Roboto
-    code: Roboto Mono
-  language: pt-BR
-  palette:
-    scheme: default
-    primary: blue grey
 nav:
   - Home: index.md
   - Linguagens:
