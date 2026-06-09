@@ -32,6 +32,7 @@ nav:
       - Exercícios: go/exercicios_basicos_go.md
     - Java: 
       - Primeiros Passos: java/java.md
+      - Exercícios: java/exercicios_basicos.md
     - Python:
       - Alembic: python/alembic.md
       - Pillow: python/pillow.md
