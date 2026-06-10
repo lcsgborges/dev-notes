@@ -14,8 +14,9 @@ Ela normalmente contém:
 Exemplo em C:
 
 ```c
-void example():
+void example() {
     int age = 10;
+}
 ```
 
 A variável `age` geralmente é armazenada na **stack**.
