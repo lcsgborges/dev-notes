@@ -24,6 +24,8 @@ theme:
     - content.code.copy
 nav:
   - Home: index.md
+  - Fundamentos:
+    - Memória RAM: fundamentos/memoria_ram.md
   - Linguagens:
     - C:
       - OpenMP: c/openmp.md
