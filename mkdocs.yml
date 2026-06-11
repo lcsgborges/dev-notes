@@ -33,7 +33,8 @@ nav:
       - Primeiros Passos: go/go.md
       - Exercícios: go/exercicios_basicos_go.md
     - Java: 
-      - Primeiros Passos: java/java.md
+      - Primeiros Passos: java/introducao.md
+      - Orientação a Objetos: java/poo.md
       - Exercícios: java/exercicios_basicos.md
     - Python:
       - Alembic: python/alembic.md

@@ -1,4 +1,4 @@
-# Java
+# Java - Primeiros Passos
 
 ## Introdução
 
@@ -145,3 +145,112 @@ Podemos fazer o casting de variáveis em Java, imagina que recebemos um double, 
 double a = 10.0;
 int b = (int) a;
 ```
+
+## Estrutura Condicional
+
+Em Java, temos o padrão `if`, `else if` e `else`, muito parecido com C:
+
+```java
+if (idade < 18) {
+    System.out.println("Menor de idade");
+} else if (idade >= 18 && idade < 60) {
+    System.out.println("Maior de idade (adulto)");
+} else {
+    System.out.println("Maior de idade (idoso)");
+}
+```
+
+Além disso, temos o `switch-case`, muito parecido com C também:
+
+```java
+switch(valor) {
+    case 1:
+        System.out.println("Valor 1");
+        break;
+    case 2:
+        System.out.println("Valor 2");
+        break;
+    case 3:
+        System.out.println("Valor 3");
+        break;
+    default:
+        System.out.println("Inválido");
+        break;
+}
+```
+
+Temos também o operador ternário:
+
+```java
+boolean maiorIdade = (idade >= 18) ? true : false;
+```
+
+## Estruturas repetitivas
+
+Em Java, temos as estruturas repetitivas `for`, `while` e `do-while`:
+
+Exemplo de for:
+
+```java
+for (int i = 0; i < 10; i++) {
+    System.out.println(i);
+}
+```
+
+Exemplo de while:
+
+```java
+int i = 0;
+
+while (true) {
+    if (i == 100) {
+        System.out.println("Fim do while");
+        break;
+    }
+    i++;
+}
+```
+
+Exemplo de do-while:
+
+```java
+int x = 10;
+
+do {
+    System.out.println("VALOR DE X = " + x);
+    x++;
+} while(x < 20);
+```
+
+## Funções
+
+Em java, funções são métodos, já que é uma linguagem orientada a objetos, geralmente métodos são usados da seguinte maneira: `Math.sqrt()`, nesse caso, `sqrt()` é um método da classe `Math`
+
+As strings em Java têm alguns métodos interessantes, como por exemplo:
+
+- `.toLowerCase()`: transforma a string em minúscula
+- `.toUpperCase()`: transforma a string em maiúscula
+- `.replace(char1 | String1 , char2 | String2)`: troca as ocorrências de `char1|string1` por `char2|string2`
+- `.length()`: retorna o tamanho da string
+- `.trim()`: remove espaços em branco do início e do fim da string
+- `.substring(string)`: pega uma substring da string original( [i, n[)
+- `.indexOf(string)`: pega o índice do início da substring passada caso tenha
+- `.split(sep)`: separa a string e transforma em um array, separando-a pelo separador, por padrão é o "espaço"
+
+Além desses métodos, temos outros, basta olhar a documentação.
+
+Para criar uma função/método, precisamos seguir o seguinte formato:
+
+```text
+[modificador de acesso][tipo de retorno][nome da função](){}
+```
+
+Por exemplo:
+
+```java
+public double soma(double x, double y) {
+    return x + y;
+}
+```
+
+_obs_: podemos ter o `static` caso seja um método que é utilizado pela classe, sem precisar instanciar um objeto
