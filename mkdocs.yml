@@ -35,7 +35,9 @@ nav:
     - Java: 
       - Primeiros Passos: java/introducao.md
       - Orientação a Objetos: java/poo.md
-      - Exercícios: java/exercicios_basicos.md
+      - Exercícios:
+        - Exercícios Básicos: java/exercicios_basicos.md
+        - Exercícios POO I: java/exercicios_poo_parte1.md
     - Python:
       - Alembic: python/alembic.md
       - Pillow: python/pillow.md
