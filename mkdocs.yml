@@ -33,11 +33,14 @@ nav:
       - Primeiros Passos: go/go.md
       - Exercícios: go/exercicios_basicos_go.md
     - Java: 
-      - Primeiros Passos: java/introducao.md
-      - Orientação a Objetos I: java/poo.md
+      - Primeiros Passos: java/introducao/introducao.md
+      - Orientação a Objetos:
+        - Orientação a Objetos I: java/orientacao-a-objetos/poo1.md
+      - Estruturas de Dados:
+        - Arrays e Listas: java/arrays_e_listas.md
       - Exercícios:
-        - Primeiros Passos: java/exercicios_basicos.md
-        - Orientação a Objetos I: java/exercicios_poo.md
+        - Primeiros Passos: java/introducao/exercicios_basicos.md
+        - Orientação a Objetos I: java/orientacao-a-objetos/exercicios_poo1.md
     - Python:
       - Alembic: python/alembic.md
       - Pillow: python/pillow.md
