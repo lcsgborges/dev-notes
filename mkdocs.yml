@@ -34,10 +34,10 @@ nav:
       - Exercícios: go/exercicios_basicos_go.md
     - Java: 
       - Primeiros Passos: java/introducao.md
-      - Orientação a Objetos: java/poo.md
+      - Orientação a Objetos I: java/poo.md
       - Exercícios:
-        - Exercícios Básicos: java/exercicios_basicos.md
-        - Exercícios POO I: java/exercicios_poo_parte1.md
+        - Primeiros Passos: java/exercicios_basicos.md
+        - Orientação a Objetos I: java/exercicios_poo.md
     - Python:
       - Alembic: python/alembic.md
       - Pillow: python/pillow.md
