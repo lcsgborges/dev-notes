@@ -43,7 +43,6 @@ Crie os métodos:
 
 ```java
 double area()
-String maiorArea(Triangulo outroTriangulo)
 ```
 
 No método `area()`, use a fórmula de Heron:

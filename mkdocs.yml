@@ -25,29 +25,30 @@ theme:
 nav:
   - Home: index.md
   - Fundamentos:
-    - Memória RAM: fundamentos/memoria_ram.md
+      - Memória RAM: fundamentos/memoria_ram.md
+      - Redes: fundamentos/redes.md
   - Linguagens:
-    - C:
-      - OpenMP: c/openmp.md
-    - Go:
-      - Primeiros Passos: go/go.md
-      - Exercícios: go/exercicios_basicos_go.md
-    - Java: 
-      - Primeiros Passos: java/introducao/introducao.md
-      - Orientação a Objetos:
-        - Orientação a Objetos I: java/orientacao-a-objetos/poo1.md
-      - Estruturas de Dados:
-        - Arrays e Listas: java/arrays_e_listas.md
-      - Exercícios:
-        - Primeiros Passos: java/introducao/exercicios_basicos.md
-        - Orientação a Objetos I: java/orientacao-a-objetos/exercicios_poo1.md
-    - Python:
-      - Alembic: python/alembic.md
-      - Pillow: python/pillow.md
-      - SQLAlchemy: python/sqlalchemy.md
-      - Type Hints: python/types-hints-py.md
+      - C:
+          - OpenMP: c/openmp.md
+      - Go:
+          - Primeiros Passos: go/go.md
+          - Exercícios: go/exercicios_basicos_go.md
+      - Java:
+          - Primeiros Passos: java/introducao/introducao.md
+          - Orientação a Objetos:
+              - Orientação a Objetos I: java/orientacao-a-objetos/poo1.md
+          - Estruturas de Dados:
+              - Arrays e Listas: java/arrays_e_listas.md
+          - Exercícios:
+              - Primeiros Passos: java/introducao/exercicios_basicos.md
+              - Orientação a Objetos I: java/orientacao-a-objetos/exercicios_poo1.md
+      - Python:
+          - Alembic: python/alembic.md
+          - Pillow: python/pillow.md
+          - SQLAlchemy: python/sqlalchemy.md
+          - Type Hints: python/types-hints-py.md
   - Devops:
-    - Docker: devops/docker.md
+      - Docker: devops/docker.md
 markdown_extensions:
   - pymdownx.highlight:
       anchor_linenums: true
