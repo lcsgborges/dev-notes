@@ -98,4 +98,90 @@ ip addr show
 # Visualizar e modificar a tabela de roteamento (mapa de caminhos)
 ip route
 
-# 
+# Testar conectividade entre seu dispositivo e um outro dispositivo
+ping ip
+
+# Visualizar o caminho feito até chegar no ip destino
+traceroute ip
+```
+
+### Camada 4: Transporte
+
+> "Qual aplicação dentro da máquina deve receber esses dados?"
+
+Conecta programas, não apenas máquinas.
+
+- TCP
+- UDP
+- Portas
+- Conexões
+- Sockets
+
+- O **IP** identifica o dispositivo
+- A **porta** identifica o serviço
+
+Exemplo `192.168.22.20:8000`
+
+Comandos úteis:
+
+```bash
+# Visualizar portas que estão sendo usadas
+ss -tulpen
+
+# Acessar um serviço numa porta específica
+curl http://192.168.22.40:3000
+```
+
+### Camada 5: Sessão
+
+> "Como manter uma sessão de comunicação aberta e organizada?"
+
+É um controle de conversas/sessões. Geralmente é misturada com outras camadas.
+
+### Camada 6: Apresentação
+
+> "Como os dados são representados, codificados e protegidos?"
+
+Cuida de formato, codificação e criptografia.
+
+- Criptografia
+- TLS/SSL
+- Codificação
+- Compressão
+- JSON
+- XML
+- UTF-8
+- Serialização
+
+Exemplo: O `https://exemplo.com.br` possui `HTTPS` que usa `TLS` para criptografar os dados.
+
+### Camada 7: Aplicação
+
+> "Qual protocolo de aplicação está sendo usado?"
+
+- HTTP
+- HTTPS
+- DNS
+- SMTP
+- SSH
+- gRPC
+- WebSocket
+
+Cuida da parte de protocolos e dados da aplicação
+
+### Fluxo conceitual
+
+- Camada 7: `HTTP` monta a requisição
+- Camada 4: `TCP` coloca porta origem e porta destino
+- Camada 3: `IP` coloca IP origem e IP destino
+- Camada 2: `Ethernet` coloca MAC origem e MAC destino
+- Camada 1: bits viram sinais no cabo/wi-fi
+
+## Modelo TCP/IP
+
+É um modelo baseado no **OSI**, mas é mais simples e agrupa algumas camadas
+
+1. **Acesso à rede**: camadas 1 e 2 do OSI
+2. **Internet**: camada 3 do OSI
+3. **Transporte**: camada 4 do OSI
+4. **Aplicação**: camadas 5, 6 e 7 do OSI
