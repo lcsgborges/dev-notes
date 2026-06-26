@@ -26,7 +26,9 @@ nav:
   - Home: index.md
   - Fundamentos:
       - Memória RAM: fundamentos/memoria_ram.md
-      - Redes: fundamentos/redes.md
+      - Redes:
+        - Primeiros Passos: fundamentos/redes/introducao.md
+        - Camadas de Rede: fundamentos/redes/camadas.md
   - Linguagens:
       - C:
           - OpenMP: c/openmp.md
