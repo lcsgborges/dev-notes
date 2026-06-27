@@ -32,6 +32,7 @@ nav:
           - Processos e IPC:
               - Introdução: c/processos/introducao.md
               - Memória de Processo: c/processos/memoria.md
+              - File Descriptors: c/processos/fd.md
           - OpenMP: c/openmp.md
       - Go:
           - Primeiros Passos: go/go.md
