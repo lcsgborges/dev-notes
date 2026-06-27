@@ -50,7 +50,7 @@ Se não houver dados para ler:
 
 ```mermaid
     flowchart LR
-    A[Processo chama read()]
+    A["Processo chama read()"]
     B[Não há dados disponíveis]
     C[Kernel coloca processo em BLOCKED]
     A --> B --> C
@@ -107,7 +107,7 @@ ps aux | grep my_pid
     C[Kernel carrega o programa na memória]
     D[Kernel cria estrutura do processo]
     E[Kernel entrega CPU ao processo]
-    F[Programa começa a executar main()]
+    F["Programa começa a executar main()"]
     A --> B --> C --> D --> E --> F
 ```
 
@@ -149,9 +149,9 @@ Exemplo ao abrir um arquivo em C:
 
 ```mermaid
     flowchart TD
-    A[fopen()]
+    A["fopen()"]
     B[glibc]
-    C[open()]
+    C["open()"]
     D[System call]
     E[Kernel]
     F[Sistem de Arquivos]
