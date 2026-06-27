@@ -27,10 +27,12 @@ nav:
   - Fundamentos:
       - Memória RAM: fundamentos/memoria_ram.md
       - Redes:
-        - Primeiros Passos: fundamentos/redes/introducao.md
-        - Camadas de Rede: fundamentos/redes/camadas.md
+          - Primeiros Passos: fundamentos/redes/introducao.md
+          - Camadas de Rede: fundamentos/redes/camadas.md
   - Linguagens:
       - C:
+          - Processos e IPC:
+              - Introdução: c/processos/introducao.md
           - OpenMP: c/openmp.md
       - Go:
           - Primeiros Passos: go/go.md
