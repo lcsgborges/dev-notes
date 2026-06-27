@@ -18,21 +18,20 @@ theme:
     - navigation.tabs
     - navigation.tabs.sticky
     - navigation.sections
-    - navigation.expand
     - navigation.path
     - navigation.top
     - content.code.copy
 nav:
   - Home: index.md
-  - Fundamentos:
-      - Memória RAM: fundamentos/memoria_ram.md
-      - Redes:
+  - Fundamentos da Computação:
+      - Fundamentos de Rede:
           - Primeiros Passos: fundamentos/redes/introducao.md
           - Camadas de Rede: fundamentos/redes/camadas.md
-  - Linguagens:
+  - Linguagens de Programação:
       - C:
           - Processos e IPC:
               - Introdução: c/processos/introducao.md
+              - Memória de Processo: c/processos/memoria.md
           - OpenMP: c/openmp.md
       - Go:
           - Primeiros Passos: go/go.md
