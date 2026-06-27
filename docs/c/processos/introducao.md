@@ -50,9 +50,9 @@ Se não houver dados para ler:
 
 ```mermaid
     flowchart LR
-    A[Processo chama `read()`]
+    A[Processo chama read()]
     B[Não há dados disponíveis]
-    C[Kernel coloca processo em **BLOCKED**]
+    C[Kernel coloca processo em BLOCKED]
     A --> B --> C
 ```
 
@@ -62,7 +62,7 @@ Quando os dados chegam:
     flowchart LR
     A[Dados chegaram]
     B[Kernel acorda o processo]
-    C[Kernel volta para **READY**]
+    C[Kernel volta para READY]
     A --> B --> C
 ```
 
@@ -92,7 +92,7 @@ int main() {
 }
 ```
 
-Agora compilando e verificado o PID:
+Agora compilando e verificando o PID:
 
 ```bash
 gcc my_pid.c -o my_pid
@@ -111,7 +111,7 @@ ps aux | grep my_pid
     C[Kernel carrega o programa na memória]
     D[Kernel cria estrutura do processo]
     E[Kernel entrega CPU ao processo]
-    F[Programa começa a executar `main()`]
+    F[Programa começa a executar main()]
     A --> B --> C --> D --> E --> F
 ```
 
