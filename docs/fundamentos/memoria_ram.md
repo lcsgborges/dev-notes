@@ -24,7 +24,7 @@ A variável `age` geralmente é armazenada na **stack**.
 ### Características
 
 - Muito rápida
-- Tamanho limitado (geralmente MBs)
+- Tamanho limitado (geralmente alguns MB)
 - Gerenciada automaticamente
 - Os dados desaparecem quando a função termina
 
@@ -49,7 +49,7 @@ flowchart LR
 ### Características
 
 - Maior que a stack
-- Mais lenta para a alocação
+- Alocação mais lenta
 - Permite tamanhos dinâmicos
 - Precisa ser liberada manualmente em algumas linguagens (como C)
 
@@ -57,11 +57,11 @@ flowchart LR
 free(age);
 ```
 
-Em linguagens como Java, Go, C#, a liberação é normalmente feita pelo **Garbage Collector**
+Em linguagens como Java, Go e C#, a liberação normalmente é feita pelo **garbage collector**.
 
 ## Ponteiros
 
-Um ponteiro é uma variável que guarda o endereço de memória de outra variável
+Um ponteiro é uma variável que guarda o endereço de memória de outra variável.
 
 ```c
 int age = 10;
@@ -84,16 +84,16 @@ Visualmente:
 p = 0x1000
 ```
 
-O operador `&`  significa: "Qual é o endereço de memória de `age`?"
+O operador `&` significa: "Qual é o endereço de memória de `age`?"
 
-O operador `*` significa "acesse o valor armazenado naquele endereço"
+O operador `*` significa: "Acesse o valor armazenado naquele endereço".
 
 Exemplo:
 
 ```c
 printf("%d", *p);
 
-// Saída: 30
+// Saída: 10
 ```
 
 ## Relação entre Ponteiros, Stack e Heap
@@ -107,23 +107,23 @@ int *p = malloc(sizeof(int));
 
 O que acontece:
 
-1. A variável `p` é criada na stack
-2. `malloc` reserva espaço na heap do tamanho de `int` (4 bytes = 32 bits)
-3. O endereço desse espaço é reservado em `p`
-4. `*p = 50` grava o valor 50 naquele endereço
+1. A variável `p` é criada na stack.
+2. `malloc` reserva na heap um espaço com o tamanho de um `int`.
+3. O endereço desse espaço é armazenado em `p`.
+4. `*p = 50` grava o valor 50 naquele endereço.
 
 ## Resumo Prático
 
 - **Pergunta**: O dado existe apenas durante a execução da função?
 
-Provavelmente está na **stack**
+Provavelmente está na **stack**.
 
 - **Pergunta**: O dado precisa sobreviver ao término da função ou tem tamanho dinâmico?
 
-Provavelmente está na **heap**
+Provavelmente está na **heap**.
 
 - **Pergunta**: Como encontrar esse dado na memória?
 
-Através de um **ponteiro** (ou referência, em linguagens de mais alto nível)
+Por meio de um **ponteiro** (ou referência, em linguagens de mais alto nível).
 
-- Resumo: **_Stack_ guarda variáveis locais e contexto da execução. _Heap_ guarda objetos e dados alocados dinamicamente. _Ponteiros_ são endereços que permitem acessar esses dados na memória**
+- Resumo: **a _stack_ guarda variáveis locais e o contexto da execução; a _heap_ guarda objetos e dados alocados dinamicamente; ponteiros são endereços que permitem acessar esses dados na memória.**

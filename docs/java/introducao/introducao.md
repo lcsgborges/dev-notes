@@ -2,16 +2,16 @@
 
 ## Introdução
 
-Java é uma linguagem orientada a objetos, sendo uma linguagem de pré-compilação + máquina virtual
+Java é uma linguagem orientada a objetos. Seu código-fonte é compilado para bytecode, que é executado pela máquina virtual Java.
 
 - Código compilado para bytecode e executado em uma máquina virtual (JVM)
 - Portável, segura e robusta
-- Roda em vários tipos de dispositivos
+- Pode ser executada em vários tipos de dispositivos
 
-- **Java ME**: Java Micro Edition - dispositivos embarcados e móveis (IOT)
+- **Java ME**: Java Micro Edition - dispositivos embarcados e móveis (IoT)
 - **Java SE**: Java Standard Edition - core (desktops e servidores)
 - **Java EE**: Java Enterprise Edition - aplicações corporativas
-- **JavaFX**: Plataforma de software multimídia
+- **JavaFX**: plataforma de software multimídia
 
 ### Java SE
 
@@ -21,14 +21,14 @@ flowchart LR
     B -->|Compilação just-in-time<br/>JIT| C["Código de máquina"]
 ```
 
-Java possui um conceito WORA (write once run anywhere).
+Java adota o conceito WORA (_write once, run anywhere_).
 
 - Uma **aplicação** Java é composta por **classes**
-- Um **pacote** é um conjunto de classes relacionadas (`package`), exemplo: Entities, Services, Repositories
-- Um **módulo** é um agrupamento lógico de pacotes relacionados, exemplo: Módulo Financial (dentro dele temos as Entities, Services e Repositories)
-- **Aplicação** é um agrupamento de módulos relacionados, exemplo: Sistema de comércio eletrônico
+- Um **pacote** é um conjunto de classes relacionadas (`package`). Exemplo: `entities`, `services` e `repositories`
+- Um **módulo** é um agrupamento lógico de pacotes relacionados. Exemplo: módulo financeiro, contendo `entities`, `services` e `repositories`
+- Uma **aplicação** é um agrupamento de módulos relacionados. Exemplo: sistema de comércio eletrônico
 
-Instalação JDK:
+Instalação do JDK:
 
 > Linux: sudo apt install openjdk-25-jdk
 
@@ -36,31 +36,31 @@ Instalação JDK:
 
 Java é uma linguagem de programação orientada a objetos. Isso significa que em Java tudo é escrito em termos de classes e objetos. Os pilares da programação orientada a objetos (POO) são:
 
-1. Classe e objeto;
-2. Encapsulamento;
+1. Classe e objeto
+2. Encapsulamento
 3. Abstração
 4. Herança
 5. Polimorfismo
 
 ### JVM (Java Virtual Machine)
 
-É um programa que carrega e executa os aplicativos Java, convertendo os Bytecodes em código executável de máquina. A JVM é responsável pelo gerenciamento dos aplicativos, à medida que são executados. Graças a JVM, os programas escritos em Java podem funcionar em qualquer plataforma, de hardware e software que possua uma versão da JVM, tornando assim essas aplicações independentes de plataforma onde funcionam.
+É um programa que carrega e executa aplicações Java, convertendo o bytecode em código de máquina durante a execução. A JVM também gerencia recursos enquanto as aplicações são executadas. Graças à JVM, os programas escritos em Java podem funcionar em qualquer plataforma de hardware e software que possua uma implementação compatível, tornando-se independentes da plataforma em que são executados.
 
 ### Componentes
 
-O Java se subdivide em componentes de desenvolvimento (JDK) e de execução (JRE), isso quer dizer que, se pretende desenvolver aplicações, é necessário ter instalado o JDK, mas para disponibilizar o executável (.jar), basta ter a instalação do JRE.
+O ecossistema Java inclui componentes de desenvolvimento (JDK) e de execução (JRE). Para desenvolver aplicações, é necessário ter o JDK instalado. Para executar uma aplicação, é necessário um ambiente de execução Java compatível.
 
 #### JDK
 
-- Composto pelo compilador (javac + JVM)
+- Composto pelo compilador `javac`, pela JVM e por outras ferramentas de desenvolvimento
 - Visualizador de applets, bibliotecas de desenvolvimento
 - Programa para composição de documentação (javadoc)
-- Depurador básico de programas e versão da JRE
+- Depurador básico de programas e uma implementação da JRE
 
 #### JRE
 
-- É composta de uma JVM e por um conjunto de bibliotecas que permite a execução de softwares em Java
-- Apenas permite a execução de programas, ou seja, é necessário o programa Java compilado pela JDK gerando os arquivos `.class`
+- É composta por uma JVM e por um conjunto de bibliotecas que permitem a execução de software em Java
+- Permite a execução de programas; portanto, o código Java precisa ter sido compilado pelo JDK para gerar os arquivos `.class`
 
 ---
 
@@ -74,7 +74,7 @@ public class Main {
 }
 ```
 
-> O `static` em Java é diferente do `static` em C. Em java significa que a classe pode usar esse atributo/método sem instanciar de fato a classe, já em C, serve para usar o valor da variável atual caso já tenha sido inicializada em outro momento no código.
+> O `static` em Java é diferente do `static` em C. Em Java, um membro estático pertence à classe e pode ser acessado sem criar uma instância. Em C, o efeito depende do contexto: uma variável local estática preserva seu valor entre chamadas, enquanto uma declaração estática no escopo do arquivo tem ligação interna.
 
 ---
 
@@ -82,7 +82,7 @@ public class Main {
 
 Os tipos primitivos em Java são:
 
-| Tipo | Tamanho | Valor Padrão |
+| Tipo | Tamanho | Valor padrão dos campos |
 | :--: | :-----: | :----------: |
 | byte | 1 byte | 0 |
 | short | 2 bytes | 0 |
@@ -90,26 +90,26 @@ Os tipos primitivos em Java são:
 | long | 8 bytes | 0L |
 | float | 4 bytes | 0.0f |
 | double | 8 bytes | 0.0 |
-| char | 1 byte | '\u0000' |
-| bool | 1 bit | false |
+| char | 2 bytes | '\u0000' |
+| boolean | Não especificado | false |
 
-Temos ainda outros tipos, como `String` que nesse caso é uma classe, mas podemos ter `String nome = "Lucas";`
+Temos ainda outros tipos, como `String`, que é uma classe. Por exemplo: `String nome = "Lucas";`.
 
-O padrão de variáveis em Java é o camelCase (ex: `myFirstVar`) e para classes usamos o padrão PascalCase (ex: `MyFirstClass`)
+O padrão de nomenclatura para variáveis em Java é o camelCase (por exemplo, `myFirstVar`), enquanto para classes usamos PascalCase (por exemplo, `MyFirstClass`).
 
 ---
 
-## Separador de Decimais
+## Separador de decimais
 
-Em Java, o separador de decimais é o padrão da linguagem da máquina, para setarmos um valor em específico, podemos usar o `Locale`:
+Em Java, a formatação de números pode seguir a configuração regional padrão do ambiente. Para definir uma configuração específica, podemos usar `Locale`:
 
 ```java
-import java.util.Locale
+import java.util.Locale;
 
 public class Main {
     public static void main(String[] args) {
-        Locale.setDefault(Locale.US); 
-        // Nesse caso, vai usar o separador padrão dos US (".")
+        Locale.setDefault(Locale.US);
+        // Nesse caso, usará o separador decimal dos EUA (".")
     }
 }
 ```
@@ -118,17 +118,17 @@ public class Main {
 
 ## Entrada de dados em Java
 
-Utilizamos o `Scanner` para ler algo do teclado e os métodos `nextInt`, `nextLine()`, e outros mais
+Utilizamos o `Scanner` e métodos como `nextInt()` e `nextLine()` para ler dados do teclado.
 
 ```java
-import java.util.Scanner
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         int num = sc.nextInt();
         System.out.println("Número: " + num);
-        // Exemplo de concatenação em java (se usar o printf é igual em C)
+        // Exemplo de concatenação em Java (printf tem sintaxe semelhante à de C)
         sc.close();
     }
 }
@@ -137,16 +137,16 @@ public class Main {
 
 ---
 
-## Casting de variáveis
+## Conversão de variáveis
 
-Podemos fazer o casting de variáveis em Java, imagina que recebemos um double, mas queremos transformar esse valor em int:
+Podemos fazer a conversão explícita (_casting_) de variáveis em Java. Imaginemos que recebemos um `double`, mas queremos transformar esse valor em `int`:
 
 ```java
 double a = 10.0;
 int b = (int) a;
 ```
 
-## Estrutura Condicional
+## Estrutura condicional
 
 Em Java, temos o padrão `if`, `else if` e `else`, muito parecido com C:
 
@@ -163,7 +163,7 @@ if (idade < 18) {
 Além disso, temos o `switch-case`, muito parecido com C também:
 
 ```java
-switch(valor) {
+switch (valor) {
     case 1:
         System.out.println("Valor 1");
         break;
@@ -224,25 +224,25 @@ do {
 
 ## Funções
 
-Em java, funções são métodos, já que é uma linguagem orientada a objetos, geralmente métodos são usados da seguinte maneira: `Math.sqrt()`, nesse caso, `sqrt()` é um método da classe `Math`
+Em Java, as funções declaradas dentro de classes são chamadas de métodos. Eles geralmente são usados da seguinte maneira: `Math.sqrt()`. Nesse caso, `sqrt()` é um método estático da classe `Math`.
 
-As strings em Java têm alguns métodos interessantes, como por exemplo:
+As strings em Java têm alguns métodos interessantes, por exemplo:
 
 - `.toLowerCase()`: transforma a string em minúscula
 - `.toUpperCase()`: transforma a string em maiúscula
-- `.replace(char1 | String1 , char2 | String2)`: troca as ocorrências de `char1|string1` por `char2|string2`
+- `.replace(char1 | string1, char2 | string2)`: troca as ocorrências de `char1` ou `string1` por `char2` ou `string2`
 - `.length()`: retorna o tamanho da string
 - `.trim()`: remove espaços em branco do início e do fim da string
-- `.substring(string)`: pega uma substring da string original( [i, n[)
-- `.indexOf(string)`: pega o índice do início da substring passada caso tenha
-- `.split(sep)`: separa a string e transforma em um array, separando-a pelo separador, por padrão é o "espaço"
+- `.substring(inicio, fim)`: obtém uma parte da string original no intervalo `[inicio, fim)`
+- `.indexOf(string)`: obtém o índice da primeira ocorrência da substring ou `-1` se ela não existir
+- `.split(regex)`: divide a string usando a expressão regular informada e retorna um array
 
-Além desses métodos, temos outros, basta olhar a documentação.
+Além desses métodos, há outros que podem ser consultados na documentação.
 
-Para criar uma função/método, precisamos seguir o seguinte formato:
+Para criar um método, precisamos seguir o seguinte formato:
 
 ```text
-[modificador de acesso][tipo de retorno][nome da função](){}
+[modificador de acesso] [tipo de retorno] [nome do método]() {}
 ```
 
 Por exemplo:
@@ -253,4 +253,4 @@ public double soma(double x, double y) {
 }
 ```
 
-_obs_: podemos ter o `static` caso seja um método que é utilizado pela classe, sem precisar instanciar um objeto
+_Observação_: podemos usar `static` quando o método pertencer à classe e não exigir a criação de um objeto.

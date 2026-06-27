@@ -80,7 +80,7 @@ Regras:
 
 - Não permita preço menor ou igual a zero.
 - Não permita quantidade negativa.
-- Não permita remover mais produtos do que existe em estoque.
+- Não permita remover mais produtos do que existem em estoque.
 
 No `main`, crie um produto, adicione unidades, remova unidades e mostre o valor total em estoque.
 
@@ -254,7 +254,7 @@ double getSaldo()
 Regras:
 
 - O saldo não pode ser alterado diretamente.
-- O saque deve cobrar uma taxa de `R$ 5.00`.
+- O saque deve cobrar uma taxa de `R$ 5,00`.
 - Não permita depósito menor ou igual a zero.
 - Não permita saque se o saldo for insuficiente.
 
@@ -291,7 +291,7 @@ Regras:
 - O autor não pode ser vazio.
 - A quantidade de páginas deve ser maior que zero.
 
-Depois tente acessar um atributo diretamente no `main`:
+Depois, tente acessar um atributo diretamente no `main`:
 
 ```java
 livro.titulo = "Java";

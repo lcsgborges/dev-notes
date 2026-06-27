@@ -2,25 +2,25 @@
 
 ## Core
 
-O core é o componente mais básico do SQLAlchemy (núcleo). Responsável por criar conexão com o banco de dados, fazer buscas e definir tipos.
+O Core é o componente mais básico do SQLAlchemy. Ele é responsável por criar conexões com o banco de dados, executar consultas e definir tipos.
 
-1.Engine
+1. Engine
 
-- **Connection**: Interface para se comunicar com o banco
-- **Dialect**: Mecanismos específicos para cada banco de dados
-- **Pool**: Deixa conexões em memória para ser mais fácil reutilizar
+- **Connection**: interface para se comunicar com o banco
+- **Dialect**: mecanismos específicos para cada banco de dados
+- **Pool**: mantém conexões disponíveis para facilitar a reutilização
 
-2.SQL Expression Language
+2. SQL Expression Language
 
-Construções em Python para representar SQL
+Construções em Python para representar SQL.
 
-3.Schema/Types
+3. Schema/Types
 
-Construções em python que representam tabelas, colunas e tipos de dados
+Construções em Python que representam tabelas, colunas e tipos de dados.
 
 ### Engine
 
-É uma fábrica de conexões com o banco de dados. O objetivo dela é que de forma dinâmica podemos nos comunicar com diferentes drivers de banco de dados usando dialetos específicos para cada banco de dados.
+É uma fábrica de conexões com o banco de dados. Seu objetivo é permitir a comunicação com diferentes drivers por meio de dialetos específicos para cada banco.
 
 ```mermaid
 flowchart TD;
@@ -35,12 +35,12 @@ from sqlalchemy import create_engine
 # Factory
 engine = create_engine('sqlite://')
 
-# em memória, para arquivos, usar equivalente a 'sqlite:///database.db'
+# Em memória; para arquivos, use algo equivalente a 'sqlite:///database.db'
 ```
 
 ### Dialetos
 
-A `engine` fabrica uma conexão com a base de dados específica usando os dialetos. Dialetos são chamadas diretas para os drivers específicos para databases específicos.
+A `engine` cria conexões com um banco de dados usando o dialeto correspondente. Os dialetos adaptam as operações do SQLAlchemy aos drivers específicos de cada banco.
 
 Por exemplo, o SQLAlchemy suporta nativamente:
 
@@ -50,11 +50,11 @@ Por exemplo, o SQLAlchemy suporta nativamente:
 - Oracle
 - Microsoft SQL Server
 
-Contando com diversas implementações via `plugins` como CockroachDB, Firebird, Amazon Redshift, ...
+Também há diversas implementações por meio de _plugins_, como CockroachDB, Firebird e Amazon Redshift.
 
 ### Conexão
 
-Com a engine conhecendo o dialeto especificado para conexão, ela pode iniciar a comunicação com o banco:
+Quando a engine conhece o dialeto especificado para a conexão, ela pode iniciar a comunicação com o banco:
 
 Exemplo 02:
 
@@ -62,7 +62,7 @@ Exemplo 02:
 from sqlalchemy import create_engine
 
 engine = create_engine('sqlite:///database.db', echo=True)
-# echo é para disparar logs no terminal
+# echo exibe logs no terminal
 
 connection = engine.connect()
 print(connection.connection.dbapi_connection)
@@ -72,7 +72,7 @@ connection.close()
 
 ### Pool
 
-Uma instrução relativamente cara de `IO` é a criação da conexão com o banco de dados. Por esse motivo, o sqlalchemy armazena as conexões em um "reservatório" de conexões chamado `pool`
+A criação de uma conexão com o banco de dados é uma operação de I/O relativamente cara. Por esse motivo, o SQLAlchemy mantém conexões em um "reservatório" chamado `pool`.
 
 ### Transação
 
@@ -81,7 +81,7 @@ Uma transação em um banco de dados é uma operação tratada como uma unidade 
 - **Atomicidade**: cada instrução em uma transação (leitura, gravação, atualização ou exclusão de dados) é tratada como uma única unidade. Ou as instruções são todas executadas ou nenhuma é executada.
 - **Consistência**: garante que a transação levará o banco de dados de um estado válido para outro estado válido, respeitando regras de negócio, restrições (_constraints_) e integridade dos dados.
 - **Isolamento**: assegura que transações executadas simultaneamente não interfiram umas nas outras.
-- **Durabilidade**: garante que, uma vez confirmada, a transação se torna permanente no sistema, mesmo em casos de falha de energia ou pane no servidor, os dados não são perdidos.
+- **Durabilidade**: garante que, uma vez confirmada, a transação se torne permanente no sistema. Mesmo em casos de falha de energia ou pane no servidor, os dados não são perdidos.
 
 Exemplo 03:
 
@@ -105,10 +105,10 @@ engine = create_engine('sqlite:///database.db', echo=True)
 
 with engine.connect() as conn:
     sql = text('select id, name, comment from comments')
-    result = conn.execute(sql) 
+    result = conn.execute(sql)
 ```
 
-Exemplo 05 (transação async):
+Exemplo 05 (transação assíncrona):
 
 ```python
 from sqlalchemy import text
@@ -123,12 +123,12 @@ async with engine.connect() as conn:
 
 ### Result
 
-O resultado obtido no execute é um objeto especial chamado **Result**. Ele implementa diversos métodos, além de ser um iterável. Alguns métodos úteis:
+O resultado obtido com `execute()` é um objeto especial chamado **Result**. Ele implementa diversos métodos, além de ser iterável. Alguns métodos úteis:
 
-- `.fetchone()`: pega o primeiro
-- `.fetchmany(3)` ou `.partitions(3)`: pega alguns valores
-- `.fetchall()` ou `.all()`: pega todos os valores
-- `.first()`: pega 1, mas não dá erro se não conseguir
+- `.fetchone()`: obtém o primeiro valor
+- `.fetchmany(3)` ou `.partitions(3)`: obtém alguns valores
+- `.fetchall()` ou `.all()`: obtém todos os valores
+- `.first()`: obtém o primeiro valor ou retorna `None` se não houver resultados
 
 Exemplo 06:
 
@@ -145,7 +145,7 @@ with engine.connect() as conn:
 
 ### Schemas e Types
 
-Os metadados das tabelas podem ser descritos por Schemas (exemplo: nome das colunas) e seus determinados tipos
+Os metadados das tabelas podem ser descritos por schemas, como os nomes das colunas e seus respectivos tipos.
 
 Exemplo 07:
 
@@ -169,7 +169,7 @@ metadata.create_all(engine)
 
 ### Reflection
 
-As funções de inspeção são agregadas a construção de schemas, para evitar a criação dos metadados em um banco de já existe:
+As funções de inspeção podem ser usadas na construção de schemas para carregar os metadados de um banco que já existe:
 
 Exemplo 08:
 
@@ -186,27 +186,27 @@ print(comments.columns)
 
 ### SQL Expression Language
 
-Até o momento, todas as operações foram feitas com text() e SQL bruto. O **Core** tem um grupo de funções e objetos que podem ajudar a montar SQL:
+Até o momento, todas as operações foram feitas com `text()` e SQL bruto. O **Core** tem um grupo de funções e objetos que ajudam a montar instruções SQL:
 
 - **DQL**: Data Query Language
 - **DML**: Data Manipulation Language
 
-Usado em conjunto com os schemas.
+Esses recursos são usados em conjunto com os schemas.
 
 #### DQL
 
-Uma das partes mais importantes dentro dos bancos de dados é a busca pelos dados (chamado de Query). O SQLAlchemy tem um sistema completo e extenso sobre a criação de queries. Começando pelo básico, temos o **select()**:
+Uma das operações mais importantes em bancos de dados é a consulta aos dados (_query_). O SQLAlchemy tem um sistema completo para criar consultas. Começando pelo básico, temos `select()`:
 
 ```python
 stmt = select(comments)
 print(stmt)
-# SELECT comments.id, comments.name, comments.comment, comments.live, 
+# SELECT comments.id, comments.name, comments.comment, comments.live,
 # comments.created_at FROM comments
 ```
 
 ##### CompoundSelect
 
-O resultado do select é um builder, com ele podemos encadear comandos e fazer uma busca mais complexa:
+O resultado de `select()` é um construtor de instruções (_builder_). Com ele, podemos encadear métodos e criar uma consulta mais complexa:
 
 ```python
 stmt = (
@@ -244,8 +244,8 @@ stmt = (
     update(comments)
     .where(
         comments.c.name == 'lucas',
-        comments.c.comment = 'teste',
-        comments.c.live = 'youtube',
+        comments.c.comment == 'teste',
+        comments.c.live == 'youtube',
     )
     .values(comment='teste 2')
 )
@@ -262,9 +262,9 @@ stmt = delete(comments).where(
 
 ## ORM (Object-Relational Mapper)
 
-- **Object**: um **objeto python**, como uma classe
-- **Relational**: relacional é em relação aos bancos relacionais
-- **Mapper**: quer dizer que é feito um **mapeamento entre os metadados** das tabelas em uma classe e cada row é relacionada a uma instância
+- **Object**: um **objeto Python**, como uma instância de classe
+- **Relational**: refere-se aos bancos de dados relacionais
+- **Mapper**: indica o **mapeamento entre os metadados** das tabelas e as classes, em que cada linha é associada a uma instância
 
 Exemplo 09:
 
@@ -281,11 +281,11 @@ class Comment(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String, nullable=False)
     comment = Column(String, nullable=False)
-    live = Column(String, nullable=False
+    live = Column(String, nullable=False)
     created_at = Column(DateTime, server_default=func.now())
 ```
 
-Exemplo 10 (com typing):
+Exemplo 10 (com tipagem):
 
 ```python
 from datetime import datetime
@@ -329,7 +329,7 @@ class Comment:
 
 ### Session
 
-A `session` faz o papel da "connection" do core, mas retorna objetos ORM na query.
+A `Session` desempenha no ORM um papel semelhante ao da `Connection` no Core, mas permite trabalhar com objetos mapeados.
 
 ```mermaid
 flowchart TD
@@ -352,4 +352,4 @@ with Session(engine) as s:
     s.commit()
 ```
 
-> Usar scalar() ou scalars() quando quisermos o objeto inteiro, se quisermos apenas algumas colunas, melhor usar fetch() e variações
+> Use `scalar()` ou `scalars()` quando quiser obter objetos mapeados. Para resultados com várias colunas, trabalhe com as linhas retornadas por `execute()`.

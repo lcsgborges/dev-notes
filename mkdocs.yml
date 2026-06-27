@@ -40,7 +40,7 @@ nav:
           - Orientação a Objetos:
               - Orientação a Objetos I: java/orientacao-a-objetos/poo1.md
           - Estruturas de Dados:
-              - Arrays e Listas: java/arrays_e_listas.md
+              - Arrays e Listas: java/estrutura-de-dados/arrays_e_listas.md
           - Exercícios:
               - Primeiros Passos: java/introducao/exercicios_basicos.md
               - Orientação a Objetos I: java/orientacao-a-objetos/exercicios_poo1.md
@@ -49,7 +49,7 @@ nav:
           - Pillow: python/pillow.md
           - SQLAlchemy: python/sqlalchemy.md
           - Type Hints: python/types-hints-py.md
-  - Devops:
+  - DevOps:
       - Docker: devops/docker.md
 markdown_extensions:
   - pymdownx.highlight:

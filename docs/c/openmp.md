@@ -2,18 +2,18 @@
 
 ## Por que utilizar programação paralela?
 
-Os dois principais motivos:
+Os dois principais motivos são:
 
 - **Reduzir o tempo** necessário para solucionar um problema.
 - **Resolver problemas mais complexos** e de maior dimensão.
 
-## Modelos de Programação Paralela
+## Modelos de programação paralela
 
 ### Programação em memória compartilhada (OpenMP, Cilk, CUDA)
 
 - Programação usando processos ou threads.
 - Decomposição do domínio ou funcional com granularidade fina, média ou grossa.
-- Comunicação atráves de uma **memória compartilhada**.
+- Comunicação através de uma **memória compartilhada**.
 - Sincronização através de mecanismos de exclusão mútua.
 
 ### Programação em memória distribuída (MPI)
@@ -22,7 +22,7 @@ Os dois principais motivos:
 - Decomposição do domínio com granularidade grossa.
 - Comunicação e sincronização por **troca de mensagens**.
 
-## Introdução do OpenMP
+## Introdução ao OpenMP
 
 Tipos e protótipos de funções no arquivo:
 
@@ -30,7 +30,7 @@ Tipos e protótipos de funções no arquivo:
 #include <omp.h>
 ```
 
-A maioria das contruções OpenMP são diretivas de compilação
+A maioria das construções do OpenMP consiste em diretivas de compilação:
 
 ```c
 # pragma omp construct [clause[clause]...]
@@ -39,11 +39,11 @@ A maioria das contruções OpenMP são diretivas de compilação
 
 # pragma omp parallel private(var1, var2) shared(var3, var4)
 {
-    
+
 }
 ```
 
-> Em C, `#pragma` é uma diretiva de pré-processamento que modifica/controla alguns comportamentos do compilador que não fazem parte da linguagem em si. De forma resumida, passa comandos especiais ao compilador.
+> Em C, `#pragma` é uma diretiva de pré-processamento que modifica ou controla comportamentos do compilador que não fazem parte da linguagem em si. De forma resumida, ela passa comandos especiais ao compilador.
 
 Notas de compilação com **GCC**:
 
@@ -53,7 +53,7 @@ gcc code.c -o code.out -fopenmp
 
 ### Funções OpenMP
 
-Algumas funções comuns OpenMP:
+Algumas funções comuns do OpenMP:
 
 ```c
 // Arquivo de interface da biblioteca OpenMP
@@ -65,8 +65,7 @@ int omp_get_thread_num();
 // Indica o número de threads a executar na região paralela
 void omp_set_num_threads(int num_threads);
 
-// Retorna o número de threads que estão executando no momento (por padrão é o 
-// número de core do processador)
+// Retorna o número de threads da equipe que executa a região paralela
 
 // Podemos alterar esse padrão usando: export OMP_NUM_THREADS=4 (por exemplo)
 int omp_get_num_threads();
@@ -74,17 +73,17 @@ int omp_get_num_threads();
 
 ### Diretivas OpenMP
 
-Algumas diretivas comuns OpenMP:
+Algumas diretivas comuns do OpenMP:
 
 ```c
-// Cria uma região paralela. Define variáveis privadas e compartilhas entre 
+// Cria uma região paralela. Define variáveis privadas e compartilhadas entre
 // as threads
 
-// Variável privada é diferente para cada thread
+// Cada thread possui sua própria cópia da variável privada
 #pragma omp parallel private(...) shared(...)
-{ // precisa do bloco na linha debaixo
-    
-    // Nesse caso abaixo, apenas a thread mais rápida executa ele
+{ // Precisa do bloco na linha abaixo
+
+    // No caso abaixo, apenas uma thread executa o bloco
     #pragma omp single
 }
 ```
@@ -95,7 +94,7 @@ Especifica um conjunto de variáveis que são compartilhadas entre as threads (p
 
 #### Cláusula private
 
-Especifica um conjunto de variáveis privadas. Os valores no início da região paralela são indefinidos. Ao final da região paralela, as variáveis também são desfeitas, por exemplo, o valor que ela assume ao sair da região paralela pode não ser o mesmo que ela tinha na região paralela.
+Especifica um conjunto de variáveis privadas. Os valores no início da região paralela são indefinidos. Ao final da região, as cópias privadas são descartadas; portanto, os valores das variáveis originais não são atualizados por essas cópias.
 
 ### Exercício 01: Hello World em OpenMP
 
@@ -118,22 +117,22 @@ int main() {
 // Para compilar: gcc code01.c -o code.out -fopenmp
 ```
 
-No OpenMP, podemos usar `#pragma omp for` que permite que usemos laços de repetição sem se preocupar com definir um chunk, init e end para o vetor igual no **MPI**.
+No OpenMP, podemos usar `#pragma omp for`, que permite dividir as iterações de um laço entre as threads sem definir manualmente um chunk, um início e um fim para cada uma, como seria necessário em uma distribuição manual com **MPI**.
 
-### Interações das Threads
+### Interações das threads
 
-OpenMP é um modelo de _multithreading_ de memória compartilhada, portanto, threads se comunicam através de variáveis compartilhadas.
+OpenMP é um modelo de _multithreading_ de memória compartilhada; portanto, as threads se comunicam por meio de variáveis compartilhadas.
 
-- Compartilhamento não intencional de dados causa **condição de corrida** (quando a saída do programa muda quando as threads são escalonadas de forma diferente)
-- O problema ocorre quando duas ou mais threads tentam acessar/alterar o conteúdo da mesma estrutura
-- Precisamos pensar numa forma de acesso aos dados para evitar a sincronização (é cara)
+- O compartilhamento não intencional de dados causa **condições de corrida** (quando a saída do programa muda conforme as threads são escalonadas)
+- O problema ocorre quando duas ou mais threads tentam acessar ou alterar o conteúdo da mesma estrutura simultaneamente
+- Precisamos planejar o acesso aos dados para reduzir a necessidade de sincronização, pois ela tem custo de desempenho
 
 ### Sincronização
 
-Assegue que uma ou mais threads estão em um estado bem definido em um ponto conhecido da execução. As duas formas mais comuns são:
+Assegura que uma ou mais threads estejam em um estado bem definido em um ponto conhecido da execução. As duas formas mais comuns são:
 
 - **Barreira**: cada thread espera na barreira até a chegada de todas as demais
-- **Exclusão mútua**: define um bloco de código onde apenas uma thread pode executar por vez
+- **Exclusão mútua**: define um bloco de código que apenas uma thread pode executar por vez
 
 #### Barrier
 
@@ -194,10 +193,10 @@ int main() {
     int id, nthreads, v[TAM];
     int sum = 0;
     int sum_local = 0;
-    
+
     for (int i = 0; i < TAM; i++)
         v[i] = 1;
-    
+
     #pragma omp parallel private(id) shared(nthreads, sum)
     {
         #pragma omp single
@@ -217,23 +216,23 @@ int main() {
 
 ### Redução
 
-Combinação de variáveis locais de uma thread em uma variável única. Essa situação se chama **redução**.
+A combinação de variáveis locais das threads em uma única variável é chamada de **redução**.
 
 Diretiva reduction: `reduction(op: list_vars)`
 
 Dentro de uma região paralela ou divisão de trabalho:
 
-- Será feita uma cópia local de cada variável na lista
-- Será inicializada dependendo da operação (ex: 0 para +, 1 para *)
-- Atualizações acontecem na cópia local
-- Cópias locais são "reduzidas" para uma única variável original (global)
+- Será feita uma cópia local de cada variável da lista
+- Cada cópia será inicializada de acordo com a operação (por exemplo, 0 para `+` e 1 para `*`)
+- As atualizações acontecerão na cópia local
+- As cópias locais serão "reduzidas" para a variável original
 
 ```c
 // Exemplo:
 #pragma omp for reduction(+: sum)
 ```
 
-Solução do **Vector SUM (ex 02)** com Reduction:
+Solução do **Vector SUM (exercício 02)** com redução:
 
 ```c
 #include <stdio.h>
@@ -264,24 +263,24 @@ No contexto de programação paralela com OpenMP, `#pragma omp section` é uma d
 #include <omp.h>
 
 int main() {
-    #pragma omp parallel 
-    // Poderia ser também:  #pragma omp parallel sections
+    #pragma omp parallel
+    // Também poderia ser: #pragma omp parallel sections
     {
         #pragma omp sections
         {
             #pragma omp section
             {
-                // Só 1 thread pega pra fazer essa função
+                // Apenas uma thread executa essa função
                 printf("Função 1\n");
             }
             #pragma omp section
             {
-                // Só 1 thread pega pra fazer essa função
+                // Apenas uma thread executa essa função
                 printf("Função 2\n");
             }
         }
         // Todas as threads executam essa função
-        printf("Função executada por todas threads!\n");
+        printf("Função executada por todas as threads!\n");
     }
     return 0;
 }

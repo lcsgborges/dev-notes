@@ -1,11 +1,11 @@
 # Arquivos em C
 
-- **Texto**: os bytes do arquivo devem ser interpretados por uma tabela de caracteres (geralmente ASCII)
-- **Binário**: bytes interpretados por outros programas
+- **Texto**: os bytes do arquivo devem ser interpretados segundo uma codificação de caracteres (por exemplo, ASCII)
+- **Binário**: os bytes são interpretados por outros programas
 
 ## `stdio.h`
 
-Biblioteca padrão C de entrada e saída
+Biblioteca padrão de entrada e saída da linguagem C.
 
 ```c
 #include <stdio.h>

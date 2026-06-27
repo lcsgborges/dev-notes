@@ -1,10 +1,10 @@
 # Fundamentos de Rede
 
-Uma rede de computadores nada mais é do que vários computadores conectados entre si através de cabos físicos ou wi-fi.
+Uma rede de computadores é formada por vários dispositivos conectados entre si por cabos ou redes sem fio.
 
-Toda comunicação é binária, ou seja, o computador envia bits convertidos em pulsos elétricos, sendo que 0 é para 0V (baixa tensão) e 1 é para 5V (alta tensão).
+Na comunicação digital, os bits são representados por sinais físicos, como variações de tensão elétrica, pulsos de luz ou ondas de rádio. Os níveis usados para representar 0 e 1 dependem da tecnologia empregada.
 
-Entretanto, só esse envio não basta, pois o envio aleatório de bits entre um computador A para um computador B não quer dizer nada, por isso, foram criados os **protocolos** que definem contratos/regras de comunicação
+Entretanto, apenas esse envio não basta, pois uma sequência aleatória de bits enviada de um computador A para um computador B não transmite uma informação compreensível. Por isso, foram criados os **protocolos**, que definem contratos e regras de comunicação.
 
 Um exemplo simples seria:
 
@@ -18,13 +18,13 @@ Se houver erros, o receptor avisa
 
 ## Comunicação Serial e Rede Local
 
-A comunicação serial é uma comunicação física em que um computador A envia os bits em uma ordem e o computador B recebe os mesmos bits nessa mesma ordem, exemplo:
+A comunicação serial é uma forma de comunicação em que um computador A envia os bits em sequência e o computador B os recebe na mesma ordem. Por exemplo:
 
 ```text
 A envia 01001111 e B recebe 01001111
 ```
 
-Isso gera um problema quando temos vários computadores, pois nesse caso, cada computador precisaria estar comunicado entre si, exemplo, 3 computadores A, B e C:
+Isso gera um problema quando temos vários computadores, pois cada um precisaria estar conectado aos demais. Por exemplo, com três computadores, A, B e C:
 
 ```text
 A <-> B
@@ -32,28 +32,28 @@ A <-> C
 B <-> C
 ```
 
-Dessa forma, surgiu a ideia de criar uma rede local, chamada de LAN (Local Area Network). Dessa forma, surgiu o Ethernet em que todos os computadores estavam conectados através de um único cabo:
+Para resolver esse problema, surgiu a ideia de criar uma rede local, chamada de LAN (_Local Area Network_). Também surgiu a Ethernet, em que todos os computadores eram conectados por um único cabo compartilhado:
 
 ```text
 A <-> B <-> C <-> D
 ```
 
-Entretanto, todos os computadores participavam da comunicação, mesmo que não fosse enviado nada para ele, pois no exemplo acima, se A enviar uma mensagem para D, tanto B quanto C participam dessa comunicação.
+Entretanto, todos os computadores participavam da comunicação, mesmo quando a mensagem não era destinada a eles. No exemplo acima, se A enviasse uma mensagem para D, tanto B quanto C receberiam o sinal durante a transmissão.
 
-Além disso, se dois computadores enviarem mensagem ao mesmo tempo, teria um problema na rede. Dessa forma, foi criado um algoritmo chamado **CSMA/CD** que basicamente cancelava a transmissão, aguardava um certo tempo e tentava novamente. Exemplo simples: "imagine várias pessoas numa conversa e 2 começam a falar ao mesmo tempo, elas parariam de falar, esperariam um certo tempo e tentariam voltar a conversar"
+Além disso, se dois computadores enviassem mensagens ao mesmo tempo, ocorreria uma colisão na rede. Por isso, foi criado um método chamado **CSMA/CD**, que detectava a colisão, interrompia a transmissão, aguardava certo tempo e tentava novamente. Um exemplo simples seria imaginar várias pessoas em uma conversa: se duas começassem a falar ao mesmo tempo, elas parariam, esperariam certo tempo e tentariam novamente.
 
-Depois, surgiu o **switch**, um aparelho que fica responsável por receber uma mensagem e repassar para o computador de origem. Essa identificação é feita pelo **MAC Address** (Media Access Control). Quando um computador A quer falar com um computador B, ele envia tanto seu endereço MAC e o endereço MAC do destino. Esse envio é chamado de **Frame Ethernet**
+Depois, surgiu o **switch**, um equipamento responsável por receber um quadro e encaminhá-lo ao computador de destino. Essa identificação é feita pelo **endereço MAC** (_Media Access Control_). Quando um computador A quer se comunicar com um computador B, o quadro contém tanto o endereço MAC de origem quanto o endereço MAC de destino. Esse envio é chamado de **quadro Ethernet**.
 
-O switch sabe todos os computadores conectados nele, dessa forma, ele consegue obter o endereço MAC de cada um e distribuir as conexões. Para que se tenha integridade da mensagem, ou seja, que não houve falha no recebimento, usa-se um verificador **FCS (Frame Check Sequence)**, um código de verificação de erro adicionado ao final de um quadro (frame) Ethernet e se o FCS calculado pelo receptor não for igual ao enviado, o quadro é descartado.
+O switch aprende quais computadores estão conectados a cada porta e registra seus endereços MAC. Para verificar a integridade da mensagem, usa-se o **FCS (_Frame Check Sequence_)**, um código de detecção de erros adicionado ao final de um quadro Ethernet. Se o FCS calculado pelo receptor não for igual ao recebido, o quadro será descartado.
 
-Os **switches** resolvem o problema local, mas não quando precisamos nos comunicar com computadores que não estão no mesmo local. Dessa forma surgiram os **roteadores**, responsáveis pela comunicação entre redes.
+Os **switches** resolvem o problema da comunicação local, mas não o da comunicação com computadores que estão em outras redes. Para isso, existem os **roteadores**, responsáveis pela comunicação entre redes.
 
-- Switch: responsável por conectar dois ou mais computadores
-- Roteador: responsável por conectar duas ou mais redes
+- Switch: responsável por conectar dois ou mais dispositivos em uma rede local.
+- Roteador: responsável por conectar duas ou mais redes.
 
-O principal identificador físico é o **MAC Address**, já o principal identificador lógico é o **IP**
+O principal identificador da interface de rede na camada de enlace é o **endereço MAC**, enquanto o principal identificador lógico na camada de rede é o **endereço IP**.
 
-Em uma rede Internet, o identificador lógico é o **IP**, responsável por resolver a comunicação entre redes e permitir criar uma organização lógica. Exemplo, uma empresa pode ter várias redes separadas por setores (RH, Vendas, etc)
+Em uma rede IP, o identificador lógico é o **endereço IP**, que permite a comunicação entre redes e a criação de uma organização lógica. Por exemplo, uma empresa pode ter várias redes separadas por setores, como RH e vendas.
 
 ```text
 192.168.1.11
@@ -70,25 +70,25 @@ IP: 192.168.1.10
 Máscara de Rede: 255.255.255.0
 ```
 
-Essa máscara de rede também pode ser escrita assim: 192.168.1.0/24, representando que os primeiros 24 bits identificam a rede e o restante dos bits identifica o host. Lembrando que o IP é formado por quatro grupos de 0 a 255 (totalizando 8 bits por grupo)
+Essa rede também pode ser escrita assim: `192.168.1.0/24`, indicando que os primeiros 24 bits identificam a rede e os bits restantes identificam o host. Um endereço IPv4 é formado por quatro grupos com valores de 0 a 255, totalizando 8 bits por grupo.
 
-Logo, a rede de IP 192.168.1.0/24 permite os hosts de 192.168.1.0 até 192.168.1.255, mas geralmente os IPs terminados em 0 e 255 são reservados para identificar a rede e o broadcast respectivamente.
+Logo, a rede `192.168.1.0/24` abrange os endereços de `192.168.1.0` a `192.168.1.255`, mas o primeiro e o último são reservados, respectivamente, para identificar a rede e o broadcast. Nesse caso, os endereços de host utilizáveis vão de `192.168.1.1` a `192.168.1.254`.
 
 ## Rede Remota, IP Interno e IP Externo
 
-Suponhamos que nosso IP seja 192.168.1.10 e queremos enviar dados para o IP 192.168.1.20, esse computador está na mesma rede que a gente, dessa forma podemos enviar dados usando apenas o MAC Address do computador de IP 192.168.1.20. Entretanto, vamos supor que queremos enviar algo para um computador que não está na nossa rede, por exemplo, IP 8.8.8.8.
+Suponhamos que nosso IP seja `192.168.1.10` e queiramos enviar dados para o IP `192.168.1.20`. Esse computador está na mesma rede que o nosso; portanto, podemos enviar os dados diretamente ao endereço MAC correspondente. Agora, suponhamos que queiramos enviar algo para um computador que não está na nossa rede, como o IP `8.8.8.8`.
 
-Para isso, precisamos usar um Gateway (geralmente nosso roteador). O gateway é a "porta de saída" da nossa rede, e geralmente fica no host 1, exemplo: 192.168.1.1. Então nesse caso, nosso roteador tem o IP Interno 192.168.1.1 e através de um IP Externo (exemplo: 200.100.50.25), faz a comunicação com o IP 8.8.8.8
+Para isso, precisamos usar um gateway, geralmente o nosso roteador. O gateway é a "porta de saída" da rede local e costuma usar um endereço como `192.168.1.1`. Nesse caso, o roteador tem o IP interno `192.168.1.1` e, por meio de um IP externo, como `200.100.50.25`, comunica-se com outras redes para alcançar o IP `8.8.8.8`.
 
-Quando um IP está fora da nossa rede local usamos a interface WAN do roteador (Wide Area Network), ou seja, IP Externo
+Quando um IP está fora da nossa rede local, o tráfego é encaminhado ao roteador, que usa sua interface WAN (_Wide Area Network_) para se comunicar com a rede externa.
 
-Se o destino é na nossa mesma rede, não precisamos usar o **Gateway**, basta usar o switch que usa o protocolo **ARP** (Address Resolution Protocol) para identificar os computadores conectados, para visualizar:
+Se o destino estiver na mesma rede, não precisamos usar o **gateway**. O dispositivo de origem usa o protocolo **ARP** (_Address Resolution Protocol_) para descobrir o endereço MAC associado ao IP de destino. Para visualizar a tabela ARP:
 
 ```bash
 arp -a
 ```
 
-Geralmente os IPs usados dentro de redes locais são os seguintes:
+Geralmente, os intervalos de IP usados em redes locais são os seguintes:
 
 ```text
 10.0.0.0/8
@@ -96,22 +96,22 @@ Geralmente os IPs usados dentro de redes locais são os seguintes:
 192.168.0.0/16
 ```
 
-Quando vamos acessar a Internet Externa, nosso roteador troca o IP da rede local de quem chamou para o IP Externo dele através de uma porta e faz a requisição, o protocolo que faz isso é o **NAT** (Network Address Translation). Exemplo:
+Ao acessar a Internet, o roteador pode trocar o IP e a porta de origem da rede local por seu IP externo e outra porta. O mecanismo responsável por essa tradução é o **NAT** (_Network Address Translation_). Exemplo:
 
 ```text
 Computador A -> 192.168.1.10:50100 vira 200.100.50.25:60001
 ```
 
-Quando chega a resposta, ele só passa pra porta que o chamou a resposta recebida
+Quando a resposta chega, o roteador consulta a tradução registrada e a encaminha ao dispositivo e à porta de origem corretos.
 
-Nosso roteador geralmente só precisa saber de algumas rotas, não precisa saber todas:
+Nosso roteador geralmente precisa conhecer apenas algumas rotas, não todas:
 
 - Minha LAN
 - Meu provedor
 - Rota padrão (geralmente do provedor)
 
-As demais rotas/redes fica para os **Sistemas Autônomos** (AS), empresas grandes que geralmente possuem uma vasta lista de endereços IPs que sabem onde estão
+O encaminhamento entre as demais redes fica a cargo dos **sistemas autônomos** (AS), que anunciam os prefixos IP sob sua responsabilidade e trocam informações de roteamento entre si.
 
 ## Broadcast
 
-É uma forma de enviar mensagem para todos os dispositivos conectados na mesma rede local. Usado com frequência para descoberta de dispositivos principalmente com **ARP** e **DHCP**. Geralmente enviamos pro switch FF:FF:FF:FF:FF:FF e ele distribui a mensagem para todos os dispositivos que estão conectados nele. Isso se chama **flooding** e é útil para descobrir os endereços e mapear os endereços MAC deles e o IP e salva na tabela ARP
+É uma forma de enviar uma mensagem a todos os dispositivos do mesmo domínio de broadcast. É usado com frequência na descoberta de dispositivos, principalmente com **ARP** e **DHCP**. Em uma rede Ethernet, um quadro destinado a `FF:FF:FF:FF:FF:FF` é distribuído pelo switch a todas as portas relevantes. Esse processo é chamado de **flooding**. No caso do ARP, ele permite descobrir o endereço MAC associado a um IP e salvar essa associação na tabela ARP.

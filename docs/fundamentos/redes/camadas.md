@@ -2,7 +2,7 @@
 
 ## Modelo OSI
 
-É um modelo conceitual muito usado para estudos que separa as camadas em etapas muito bem definidas, mas normalmente essas camadas se misturam, são elas:
+É um modelo conceitual muito usado em estudos, que separa a comunicação em camadas bem definidas. Na prática, algumas dessas responsabilidades podem se sobrepor. As camadas são:
 
 1. Física
 2. Enlace
@@ -18,7 +18,7 @@
 
 - Cabo de rede
 - Fibra ótica
-- Wi-fi
+- Wi-Fi
 - Conectores
 - Sinais elétricos
 - Sinais de luz
@@ -32,7 +32,7 @@ Comandos úteis:
 # Listar/gerenciar interfaces de rede
 ip link
 
-# Consultar/monitorar/alterar configurações de hardware e driver de 
+# Consultar/monitorar/alterar configurações de hardware e driver de
 # dispositivos de rede
 ethtool device
 ```
@@ -41,17 +41,17 @@ ethtool device
 
 > "Como entregar dados entre dispositivos no mesmo segmento local?"
 
-A camada de Enlace organiza a comunicação entre dispositivos na mesma rede local através do **MAC Address**
+A camada de enlace organiza a comunicação entre dispositivos no mesmo segmento de rede local por meio de **endereços MAC**.
 
 - Ethernet
-- Mac Address
+- Endereço MAC
 - Switch
 - Frame Ethernet
 - ARP
 - Broadcast
 - VLAN
 
-Quando queremos enviar dados para outro dispositivo, precisamos descobrir o MAC Address dele através da tabela ARP.
+Quando queremos enviar dados para outro dispositivo na mesma rede IPv4, precisamos descobrir o endereço MAC dele por meio do ARP.
 
 Comandos úteis:
 
@@ -60,7 +60,7 @@ Comandos úteis:
 ip neigh
 arp -a
 
-# Exibir o estado e propriedades das interfaces de rede que estão 
+# Exibir o estado e propriedades das interfaces de rede que estão
 # conectadas a uma ponte (bridge) configurada no sistema
 bridge link show
 ```
@@ -69,7 +69,7 @@ bridge link show
 
 > "Para qual rede esse pacote precisa ir?"
 
-É nessa camda que entra o IP.
+É nessa camada que entra o IP.
 
 - IPv4
 - IPv6
@@ -101,7 +101,7 @@ ip route
 # Testar conectividade entre seu dispositivo e um outro dispositivo
 ping ip
 
-# Visualizar o caminho feito até chegar no ip destino
+# Visualizar o caminho percorrido até chegar ao IP de destino
 traceroute ip
 ```
 
@@ -120,7 +120,7 @@ Conecta programas, não apenas máquinas.
 - O **IP** identifica o dispositivo
 - A **porta** identifica o serviço
 
-Exemplo `192.168.22.20:8000`
+Exemplo: `192.168.22.20:8000`.
 
 Comandos úteis:
 
@@ -136,13 +136,13 @@ curl http://192.168.22.40:3000
 
 > "Como manter uma sessão de comunicação aberta e organizada?"
 
-É um controle de conversas/sessões. Geralmente é misturada com outras camadas.
+Controla conversas e sessões. Geralmente, suas responsabilidades são incorporadas a outras camadas.
 
 ### Camada 6: Apresentação
 
 > "Como os dados são representados, codificados e protegidos?"
 
-Cuida de formato, codificação e criptografia.
+Cuida do formato, da codificação e da criptografia dos dados.
 
 - Criptografia
 - TLS/SSL
@@ -153,7 +153,7 @@ Cuida de formato, codificação e criptografia.
 - UTF-8
 - Serialização
 
-Exemplo: O `https://exemplo.com.br` possui `HTTPS` que usa `TLS` para criptografar os dados.
+Exemplo: `https://exemplo.com.br` usa `HTTPS`, que utiliza `TLS` para criptografar os dados.
 
 ### Camada 7: Aplicação
 
@@ -167,19 +167,19 @@ Exemplo: O `https://exemplo.com.br` possui `HTTPS` que usa `TLS` para criptograf
 - gRPC
 - WebSocket
 
-Cuida da parte de protocolos e dados da aplicação
+Cuida dos protocolos e dos dados da aplicação.
 
 ### Fluxo conceitual
 
 - Camada 7: `HTTP` monta a requisição
-- Camada 4: `TCP` coloca porta origem e porta destino
-- Camada 3: `IP` coloca IP origem e IP destino
-- Camada 2: `Ethernet` coloca MAC origem e MAC destino
-- Camada 1: bits viram sinais no cabo/wi-fi
+- Camada 4: `TCP` adiciona as portas de origem e de destino
+- Camada 3: `IP` adiciona os endereços IP de origem e de destino
+- Camada 2: `Ethernet` adiciona os endereços MAC de origem e de destino
+- Camada 1: os bits são transformados em sinais no cabo ou na rede sem fio
 
 ## Modelo TCP/IP
 
-É um modelo baseado no **OSI**, mas é mais simples e agrupa algumas camadas
+É um modelo mais simples que o **OSI** e agrupa algumas de suas camadas:
 
 1. **Acesso à rede**: camadas 1 e 2 do OSI
 2. **Internet**: camada 3 do OSI

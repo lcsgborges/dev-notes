@@ -1,8 +1,8 @@
-# Java
+# Python
 
 Anotações sobre linguagem Python.
 
 - [Alembic](alembic.md)
 - [Pillow](pillow.md)
 - [SQLAlchemy](sqlalchemy.md)
-- [Type Hints](type-hints-py.md)
+- [Type Hints](types-hints-py.md)

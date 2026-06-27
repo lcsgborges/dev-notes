@@ -1,6 +1,6 @@
 # Java - Orientação a Objetos
 
-Basicamente, uma classe é uma representação de algo, um molde. Pode conter atributos (características e propriedades) e métodos (são funções).
+Uma classe é uma representação ou um molde de algo. Ela pode conter atributos, que representam características e propriedades, e métodos, que definem comportamentos.
 
 Exemplos comuns de classe em Java:
 
@@ -10,11 +10,11 @@ Exemplos comuns de classe em Java:
 - **Utilitários**: `Calculator`
 - **Repositórios**: `ProductRepository`, `ClientRepository`
 
-Além disso, podemos agrupar as classes dentros de pacotes (`packages`). Exemplo: `users`, com `controllers`, `services`, `repositories`, ...
+Além disso, podemos agrupar as classes dentro de pacotes (`packages`). Exemplo: `users`, com `controllers`, `services` e `repositories`.
 
 ## Modificadores de acesso
 
-Os atributos e métodos possuem modificadores de acesso e são eles:
+Os atributos e métodos possuem os seguintes modificadores de acesso:
 
 - **private**: elementos só podem ser acessados dentro da própria classe onde foram declarados
 - **default (package-private)**: aplicado automaticamente quando nenhum modificador é declarado. O elemento fica visível apenas para classes pertencentes ao mesmo pacote
@@ -23,7 +23,7 @@ Os atributos e métodos possuem modificadores de acesso e são eles:
 
 ## Membros estáticos
 
-Membros estáticos são aqueles que são acessados pela própria classe sem a necessidade de instanciar um objeto para usar o atributo ou método
+Membros estáticos pertencem à própria classe e podem ser acessados sem a necessidade de instanciar um objeto.
 
 Exemplo de uso:
 
@@ -33,18 +33,18 @@ double n = Math.sqrt(64.0);
 
 ## Classe Object
 
-Toda classe em Java herda de Object. Ele possui os seguintes métodos:
+Toda classe em Java herda de `Object`. Entre seus métodos estão:
 
-- `getClass`: retorna o tipo do objeto
-- `equals`: compara se o objeto é igual a outro
-- `hashCode`: retorna um código hash do objeto
-- `toString`: converte o objeto para String
+- `getClass()`: retorna o tipo do objeto
+- `equals()`: compara se o objeto é igual a outro
+- `hashCode()`: retorna um código hash do objeto
+- `toString()`: converte o objeto em uma representação textual
 
-Dessa forma, podemos implementar nosso próprio toString na nossa classe de modo a representá-la da melhor forma
+Dessa forma, podemos sobrescrever `toString()` em nossa classe para representar seus objetos da maneira mais adequada.
 
 ## Construtores
 
-Quando criamos novas classes, é comum usarmos métodos construtores (são responsáveis por instanciar um objeto com os valores passados), por exemplo:
+Quando criamos classes, é comum usarmos construtores, que são responsáveis por inicializar um objeto com os valores informados. Por exemplo:
 
 ```java
 
@@ -59,23 +59,23 @@ public class Person {
 }
 ```
 
-O exemplo acima cria uma classe `Person` que possui 2 atributos (`name` e `age`) e o método construtor pede um nome e uma idade para poder criar o objeto, dessa forma, quando vamos instanciar essa classe, precisamos passar esses dados como argumentos:
+O exemplo acima cria uma classe `Person` com dois atributos (`name` e `age`). O construtor recebe um nome e uma idade para inicializar o objeto. Portanto, ao instanciar essa classe, precisamos passar esses dados como argumentos:
 
 ```java
 Person person = new Person("João", 30);
 ```
 
-O `new` é a forma que declaramos que estamos criando um novo objeto em java (dentro da `Heap`)
+O operador `new` indica que estamos criando um novo objeto em Java.
 
-> Por padrão, objetos são criados na Heap em Java e a variável falamos que é do tipo referência (um ponteiro para Heap), é basicamente pensarmos em C.
+> Em geral, os objetos são alocados na heap, e a variável armazena uma referência ao objeto.
 
 ### Palavra `this`
 
-Usamos a palavra `this` para se referir ao próprio objeto em si dentro da classe, semelhante ao `self` que usamos em Python
+Usamos a palavra `this` para nos referirmos ao próprio objeto dentro da classe, de forma semelhante ao `self` usado em Python.
 
 ## Sobrecarga
 
-A sobrecarga em Java é um mesmo método poder receber diferentes argumentos, muito usado em construtores:
+A sobrecarga em Java permite declarar métodos com o mesmo nome e diferentes listas de parâmetros. Esse recurso é muito usado em construtores:
 
 ```java
 public class Product {
@@ -103,15 +103,15 @@ public class Main {
 }
 ```
 
-No caso acima, estamos criando dois objetos `Product`, mas com sobrecarga no método construtor
+No caso acima, estamos criando dois objetos `Product` usando duas versões sobrecarregadas do construtor.
 
 ## Encapsulamento
 
-Encapsulamento é você proteger os dados internos da classe. Ocultamos o detalhe de implementação e retringimos o acesso direto aos atributos, premitindo que eles sejam acessados e modificados de outras formas:
+Encapsulamento consiste em proteger os dados internos da classe. Ocultamos os detalhes de implementação e restringimos o acesso direto aos atributos, permitindo que sejam acessados e modificados de outras formas.
 
 ### Getters e Setters
 
-Para modificar/acessar um atributo, utilizamos geralmente `getters` e `setters`:
+Para acessar ou modificar um atributo, geralmente utilizamos `getters` e `setters`:
 
 ```java
 public class Product {
@@ -141,7 +141,7 @@ public class Product {
 }
 ```
 
-Agora ao acessar um atributo, podemos usar:
+Agora, para acessar ou modificar um atributo, podemos usar:
 
 ```java
 Product p = new Product("TV", 2000);

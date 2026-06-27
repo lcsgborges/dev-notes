@@ -1,5 +1,5 @@
-# Devops
+# DevOps
 
-Anotações sobre Devops.
+Anotações sobre DevOps.
 
 - [Docker](docker.md)

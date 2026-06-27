@@ -1,16 +1,16 @@
-# Types Hints Python (Dicas de tipos) ou Type Annotation
+# Type hints em Python (dicas de tipos ou anotações de tipo)
 
 > Ambiente com `python>=3.13`
 
-Os types hints não alteram por padrão o comportamento do interpretador do Python, entretanto, servem para coisas muito úteis, como:
+Por padrão, os _type hints_ não alteram o comportamento do interpretador do Python. Entretanto, são úteis para:
 
-- Permitir que ferramentas como `Mypy` ou `Pyright` encontrem erros antes de rodar
-- Ativar autocomplete inteligente e mostrar docs nos editores
+- Permitir que ferramentas como `mypy` ou `Pyright` encontrem erros antes da execução
+- Ativar o preenchimento automático inteligente e exibir documentação nos editores
 - Ajudar a entender o código
-- Evitar bugs bobos (ex: passar `int` onde era `str`, ...)
+- Evitar erros simples (por exemplo, passar `int` onde era esperado `str`)
 - Melhorar a legibilidade do código, como se fosse uma documentação automática
 
-## Tipo básicos
+## Tipos básicos
 
 ```python
 name: str = "Lucas Borges"
@@ -22,23 +22,23 @@ data: bytes = b"weather"
 
 ## Constantes
 
-Constantes não constumam ser reatribuídas, então a tipagem é redundante. O próprio valor já deixa claro o tipo:
+Constantes não costumam ser reatribuídas, então a anotação explícita de tipo pode ser redundante. O próprio valor já deixa claro o tipo:
 
 ```python
-CONSTANT = "any value" # CONSTANTE: Literal["any value"]
+CONSTANT = "any value"  # CONSTANTE: Literal["any value"]
 ```
 
 ## Coleções
 
-Geralmente tipos com mais de um valor (listas, tuplas, dicionários, ...):
+Geralmente, são tipos que contêm mais de um valor, como listas, tuplas e dicionários:
 
 ```python
 list_nums: list[int] = [1, 2, 3]
 tuple_two_values: tuple[str, int] = ("value", 123)
 tuple_many_values: tuple[str, ...] = "a", "b", "c", "d", "..."
 any_set: set[int] = {1, 2, 3, 4}
-fronze_set: frozenset[int] = frozenset([5, 6, 7])
-any_dict:  dict[str, str] = {"key1": "value1", "key2": "value2"}
+frozen_set: frozenset[int] = frozenset([5, 6, 7])
+any_dict: dict[str, str] = {"key1": "value1", "key2": "value2"}
 any_range: range = range(5)
 ```
 
@@ -52,7 +52,7 @@ any_type: type = int
 
 ## Constantes com Final
 
-`Final` impossibilita que a variável/constante seja reatribuída:
+`Final` informa aos verificadores de tipo que a variável ou constante não deve ser reatribuída:
 
 ```python
 from typing import Final

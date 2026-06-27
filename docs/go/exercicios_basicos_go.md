@@ -2,18 +2,18 @@
 
 Conteúdos cobertos:
 
-- Packages
-- Nomes públicos e privados
+- Pacotes
+- Nomes exportados e não exportados
 - Funções
 - Variáveis
 - Sistema de tipos e constantes
 - Arrays
-- Loops
-- Condicionais - IFs
-- Switches
+- Laços de repetição
+- Condicionais (`if`)
+- Estruturas `switch`
 - Defer
 
-## 1. Packages
+## 1. Pacotes
 
 ### Exercício 01 — Usando pacotes básicos
 
@@ -47,7 +47,7 @@ A raiz quadrada de 64 é 8
 
 ---
 
-## 2. Nomes públicos e privados
+## 2. Nomes exportados e não exportados
 
 Em Go, nomes que começam com letra maiúscula são **públicos/exportados**. Nomes que começam com letra minúscula são **privados ao pacote**.
 
@@ -162,7 +162,7 @@ Depois exiba uma frase como:
 José tem 25 anos e mora em Brasília
 ```
 
-### Exercício 08 — Zero values
+### Exercício 08 — Valores zero
 
 Crie variáveis sem atribuir valor inicial:
 
@@ -337,7 +337,7 @@ Média: 7.88
 
 ---
 
-## 7. Loops
+## 7. Laços de repetição
 
 ### Exercício 16 — Contador simples
 
@@ -401,7 +401,7 @@ Resultado esperado:
 
 ---
 
-## 8. Condicionais — IFs
+## 8. Condicionais (`if`)
 
 ### Exercício 20 — Verificador de nota
 
@@ -433,7 +433,7 @@ usuario := "admin"
 senha := "123456"
 ```
 
-Se usuário e senha estiverem corretos, exiba:
+Se o usuário e a senha estiverem corretos, exiba:
 
 ```txt
 Login realizado com sucesso
@@ -459,7 +459,7 @@ O número 10 é par
 
 ---
 
-## 9. Switches
+## 9. Estruturas `switch`
 
 ### Exercício 23 — Dia da semana
 
@@ -560,7 +560,7 @@ fmt.Println("Fim")
 
 Antes de rodar, tente responder mentalmente qual será a ordem da saída.
 
-Depois rode e veja o resultado.
+Depois, execute o programa e veja o resultado.
 
 ### Exercício 27 — Simulando abertura e fechamento de recurso
 
@@ -643,7 +643,7 @@ Resultado: 15
 Crie um programa que tenha:
 
 - Array de notas
-- Loop
+- Laço de repetição
 - Função para calcular média
 - `if` para verificar situação
 
@@ -651,8 +651,8 @@ Regras:
 
 1. Crie um array com 4 notas.
 2. Crie uma função `calcularMedia`.
-3. Se média for maior ou igual a 7: aprovado.
-4. Se média for maior ou igual a 5: recuperação.
+3. Se a média for maior ou igual a 7: aprovado.
+4. Se a média for maior ou igual a 5: recuperação.
 5. Caso contrário: reprovado.
 
 Exemplo:
@@ -698,7 +698,7 @@ produtos := [3]string{"Mouse", "Teclado", "Monitor"}
 precos := [3]float64{50.0, 120.0, 900.0}
 ```
 
-Use loop para exibir:
+Use um laço para exibir:
 
 ```txt
 Produto: Mouse - Preço: R$ 50.00
