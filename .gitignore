@@ -2,3 +2,7 @@
 venv/
 codes/
 *.out
+
+# Arquivos-objeto gerados por compiladores.
+*.o
+*.obj

@@ -121,7 +121,7 @@ int main(void) {
     }
 
     if (raise(SIGUSR1) != 0) {
-        perror("raise");
+        fprintf(stderr, "Não foi possível enviar SIGUSR1.\n");
         return 1;
     }
 

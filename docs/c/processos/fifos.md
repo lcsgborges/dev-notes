@@ -214,6 +214,8 @@ int main(void) {
 }
 ```
 
+Os exemplos tratam `EEXIST` como indicação de que a FIFO já foi criada. Em código de produção, devemos verificar com `lstat()` e `S_ISFIFO()` se o caminho existente realmente representa uma FIFO antes de abri-lo, principalmente em diretórios compartilhados como `/tmp`.
+
 ### Comportamento de bloqueio
 
 Por padrão, abrir uma FIFO somente para leitura com `open("canal", O_RDONLY)` bloqueia a execução até que um escritor a abra. Da mesma forma, `open("canal", O_WRONLY)` bloqueia a execução até que um leitor abra a FIFO. Com a opção `O_NONBLOCK`, a abertura para leitura retorna imediatamente, mesmo sem escritores, enquanto a abertura para escrita falha com `ENXIO` quando não há leitores.
