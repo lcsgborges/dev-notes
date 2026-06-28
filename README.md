@@ -1,6 +1,6 @@
 # Dev Notes
 
-Repositório pessoal de anotações sobre programação, desenvolvimento de software, bibliotecas, frameworks, DevOps e assuntos relacionados à tecnologia.
+Repositório pessoal de anotações sobre programação, desenvolvimento de software, bibliotecas, *frameworks*, DevOps e assuntos relacionados à tecnologia.
 
 ## Sobre
 

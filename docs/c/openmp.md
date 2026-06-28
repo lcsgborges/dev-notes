@@ -9,12 +9,12 @@ Os dois principais motivos são:
 
 ## Modelos de programação paralela
 
-### Programação em memória compartilhada (OpenMP, Cilk, CUDA)
+### Programação em memória compartilhada (OpenMP e Cilk)
 
 - Programação usando processos ou threads.
 - Decomposição do domínio ou funcional com granularidade fina, média ou grossa.
-- Comunicação através de uma **memória compartilhada**.
-- Sincronização através de mecanismos de exclusão mútua.
+- Comunicação por meio de **memória compartilhada**.
+- Sincronização por meio de mecanismos de exclusão mútua.
 
 ### Programação em memória distribuída (MPI)
 
@@ -33,11 +33,11 @@ Tipos e protótipos de funções no arquivo:
 A maioria das construções do OpenMP consiste em diretivas de compilação:
 
 ```c
-# pragma omp construct [clause[clause]...]
+#pragma omp construct [clause ...]
 
 // Exemplo:
 
-# pragma omp parallel private(var1, var2) shared(var3, var4)
+#pragma omp parallel private(var1, var2) shared(var3, var4)
 {
 
 }
@@ -56,65 +56,71 @@ gcc code.c -o code.out -fopenmp
 Algumas funções comuns do OpenMP:
 
 ```c
-// Arquivo de interface da biblioteca OpenMP
+// Arquivo de interface da biblioteca OpenMP.
 #include <omp.h>
 
-// Retorna o identificador da thread (ID)
-int omp_get_thread_num();
+// Retorna o identificador da thread atual.
+int omp_get_thread_num(void);
 
-// Indica o número de threads a executar na região paralela
+// Define o número de threads solicitado para regiões paralelas posteriores.
 void omp_set_num_threads(int num_threads);
 
-// Retorna o número de threads da equipe que executa a região paralela
-
-// Podemos alterar esse padrão usando: export OMP_NUM_THREADS=4 (por exemplo)
-int omp_get_num_threads();
+// Retorna o número de threads da equipe atual ou 1 fora de uma região paralela.
+int omp_get_num_threads(void);
 ```
+
+Também podemos solicitar um número de *threads* com a variável de ambiente `OMP_NUM_THREADS`. Exemplo: `export OMP_NUM_THREADS=4`.
 
 ### Diretivas OpenMP
 
 Algumas diretivas comuns do OpenMP:
 
 ```c
-// Cria uma região paralela. Define variáveis privadas e compartilhadas entre
-// as threads
+// Cria uma região paralela e define atributos de compartilhamento.
 
-// Cada thread possui sua própria cópia da variável privada
+// Cada thread possui sua própria cópia das variáveis privadas.
 #pragma omp parallel private(...) shared(...)
-{ // Precisa do bloco na linha abaixo
+{
 
-    // No caso abaixo, apenas uma thread executa o bloco
+    // Apenas uma thread da equipe executa o bloco seguinte.
     #pragma omp single
+    {
+        // Trabalho executado uma vez.
+    }
 }
 ```
 
 #### Cláusula shared
 
-Especifica um conjunto de variáveis que são compartilhadas entre as threads (por padrão, as variáveis são shared ao entrar na região paralela).
+Especifica variáveis cujo armazenamento é compartilhado entre as *threads*. As regras padrão dependem do local e da categoria de cada variável; a cláusula `default(none)` pode exigir que os atributos relevantes sejam declarados explicitamente.
 
 #### Cláusula private
 
-Especifica um conjunto de variáveis privadas. Os valores no início da região paralela são indefinidos. Ao final da região, as cópias privadas são descartadas; portanto, os valores das variáveis originais não são atualizados por essas cópias.
+Especifica um conjunto de variáveis privadas. Cada *thread* recebe uma nova instância, cujo valor inicial é indeterminado. Ao final da região, essas instâncias são descartadas, e seus valores não são copiados para as variáveis originais.
 
-### Exercício 01: Hello World em OpenMP
+### Exercício 1: “Olá, mundo!” em OpenMP
 
 ```c
 #include <stdio.h>
 #include <omp.h>
 
-int main() {
-    int thread_id, num_threads;
-    #pragma omp parallel private(thread_id) shared(num_threads)
+int main(void) {
+    #pragma omp parallel
     {
-        thread_id = omp_get_thread_num();
-        #pragma omp single
-        num_threads = omp_get_num_threads();
-        printf("%d of %d - hello world!\n", thread_id, num_threads);
+        int thread_id = omp_get_thread_num();
+        int num_threads = omp_get_num_threads();
+
+        printf(
+            "Thread %d de %d: olá, mundo!\n",
+            thread_id,
+            num_threads
+        );
     }
+
     return 0;
 }
 
-// Para compilar: gcc code01.c -o code.out -fopenmp
+// Para compilar: gcc -fopenmp code01.c -o code.out
 ```
 
 No OpenMP, podemos usar `#pragma omp for`, que permite dividir as iterações de um laço entre as threads sem definir manualmente um chunk, um início e um fim para cada uma, como seria necessário em uma distribuição manual com **MPI**.
@@ -123,18 +129,20 @@ No OpenMP, podemos usar `#pragma omp for`, que permite dividir as iterações de
 
 OpenMP é um modelo de _multithreading_ de memória compartilhada; portanto, as threads se comunicam por meio de variáveis compartilhadas.
 
-- O compartilhamento não intencional de dados causa **condições de corrida** (quando a saída do programa muda conforme as threads são escalonadas)
-- O problema ocorre quando duas ou mais threads tentam acessar ou alterar o conteúdo da mesma estrutura simultaneamente
-- Precisamos planejar o acesso aos dados para reduzir a necessidade de sincronização, pois ela tem custo de desempenho
+- Uma **condição de corrida de dados** ocorre quando duas ou mais *threads* acessam a mesma posição de memória sem a sincronização necessária, pelo menos um dos acessos é uma escrita e os acessos podem ocorrer simultaneamente.
+- O resultado de uma corrida pode variar conforme o escalonamento das *threads*.
+- Devemos planejar o acesso aos dados para garantir a correção e evitar sincronização desnecessária, que possui custo de desempenho.
 
 ### Sincronização
 
 Assegura que uma ou mais threads estejam em um estado bem definido em um ponto conhecido da execução. As duas formas mais comuns são:
 
-- **Barreira**: cada thread espera na barreira até a chegada de todas as demais
-- **Exclusão mútua**: define um bloco de código que apenas uma thread pode executar por vez
+- **Barreira**: cada *thread* espera até que todas as demais alcancem o mesmo ponto.
+- **Exclusão mútua**: permite que somente uma *thread* execute determinado bloco por vez.
 
-#### Barrier
+#### Barreira
+
+Exemplo esquemático:
 
 ```c
 #pragma omp parallel
@@ -147,40 +155,49 @@ Assegura que uma ou mais threads estejam em um estado bem definido em um ponto c
 }
 ```
 
-#### Exclusão mútua (Critical)
+#### Exclusão mútua (`critical`)
 
-- **Critical**: apenas uma thread pode entrar por vez
+Uma região `critical` pode ser executada por apenas uma *thread* por vez:
 
 ```c
-#pragma omp parallel
-{
-    float b;
-    int i, id, nthreads, N;
-    id = omp_get_thread_num();
-    nthreads = omp_get_num_threads();
+#include <stdio.h>
 
-    for (i = id; i < N; i += nthreads) {
-        b = big_job(i);
+int main(void) {
+    double result = 0.0;
+
+    #pragma omp parallel for
+    for (int i = 0; i < 1000; i++) {
+        double value = (double)i * i;
+
         #pragma omp critical
-        res += consume(b);
+        result += value;
     }
+
+    printf("Resultado: %.0f.\n", result);
+    return 0;
 }
 ```
 
-- **Atomic**: provê exclusão mútua para operações específicas (atribuições, incrementos e decrementos)
+A diretiva `atomic` protege determinados acessos simples à memória sem criar uma região crítica arbitrária:
 
 ```c
-#pragma omp parallel
-{
-    double tmp, b, x = 0;
-    b = do_it();
-    tmp = big_ugly(b);
-    #pragma omp atomic
-    x += tmp;
+#include <stdio.h>
+
+int main(void) {
+    long total = 0;
+
+    #pragma omp parallel for
+    for (long i = 0; i < 1000; i++) {
+        #pragma omp atomic update
+        total += i;
+    }
+
+    printf("Total: %ld.\n", total);
+    return 0;
 }
 ```
 
-### Exercício 02: Vector SUM
+### Exercício 2: soma de um vetor
 
 ```c
 #include <stdio.h>
@@ -188,28 +205,28 @@ Assegura que uma ou mais threads estejam em um estado bem definido em um ponto c
 
 #define TAM 1000
 
-int main() {
-
-    int id, nthreads, v[TAM];
+int main(void) {
+    int v[TAM];
     int sum = 0;
-    int sum_local = 0;
 
-    for (int i = 0; i < TAM; i++)
+    for (int i = 0; i < TAM; i++) {
         v[i] = 1;
+    }
 
-    #pragma omp parallel private(id) shared(nthreads, sum)
+    #pragma omp parallel shared(v, sum)
     {
-        #pragma omp single
-        nthreads = omp_get_num_threads();
+        int sum_local = 0;
 
         #pragma omp for
-        for (int i = 0; i < TAM; i++)
+        for (int i = 0; i < TAM; i++) {
             sum_local += v[i];
+        }
 
-        #pragma omp atomic
+        #pragma omp atomic update
         sum += sum_local;
     }
-    printf("SUM = %d\n", sum);
+
+    printf("Soma: %d.\n", sum);
     return 0;
 }
 ```
@@ -218,21 +235,21 @@ int main() {
 
 A combinação de variáveis locais das threads em uma única variável é chamada de **redução**.
 
-Diretiva reduction: `reduction(op: list_vars)`
+Sintaxe da cláusula: `reduction(operador:lista_de_variaveis)`.
 
 Dentro de uma região paralela ou divisão de trabalho:
 
-- Será feita uma cópia local de cada variável da lista
-- Cada cópia será inicializada de acordo com a operação (por exemplo, 0 para `+` e 1 para `*`)
-- As atualizações acontecerão na cópia local
-- As cópias locais serão "reduzidas" para a variável original
+- É criada uma cópia privada de cada variável da lista.
+- Cada cópia é inicializada com a identidade definida para o operador.
+- As atualizações acontecem nas cópias privadas.
+- Ao final, as cópias são combinadas com a variável original por meio do operador.
 
 ```c
 // Exemplo:
-#pragma omp for reduction(+: sum)
+#pragma omp for reduction(+:sum)
 ```
 
-Solução do **Vector SUM (exercício 02)** com redução:
+Solução do exercício 2 com redução:
 
 ```c
 #include <stdio.h>
@@ -240,46 +257,48 @@ Solução do **Vector SUM (exercício 02)** com redução:
 
 #define TAM 100000
 
-int main() {
+int main(void) {
     int sum = 0, v[TAM];
-    for (int i = 0; i < TAM; i++)
+
+    for (int i = 0; i < TAM; i++) {
         v[i] = 1;
+    }
 
-    #pragma omp parallel for reduction(+: sum)
-    for (int i = 0; i < TAM; i++)
+    #pragma omp parallel for reduction(+:sum)
+    for (int i = 0; i < TAM; i++) {
         sum += v[i];
+    }
 
-    printf("SUM = %d\n", sum);
+    printf("Soma: %d.\n", sum);
     return 0;
 }
 ```
 
-### Sections
+### Seções
 
-No contexto de programação paralela com OpenMP, `#pragma omp section` é uma diretiva de "compartilhamento de trabalho" (worksharing) usada dentro de um bloco `#pragma omp sections`. Ela divide tarefas distintas e independentes entre as threads, permitindo que cada bloco de código seja executado apenas uma vez por uma única thread, paralelizando funções diferentes:
+A diretiva `#pragma omp section` define uma tarefa dentro de uma construção `#pragma omp sections`. As seções são distribuídas entre as *threads* da equipe, e cada uma é executada uma única vez:
 
 ```c
 #include <stdio.h>
 #include <omp.h>
 
-int main() {
+int main(void) {
     #pragma omp parallel
-    // Também poderia ser: #pragma omp parallel sections
     {
         #pragma omp sections
         {
             #pragma omp section
             {
-                // Apenas uma thread executa essa função
-                printf("Função 1\n");
+                // Apenas uma thread executa esta seção.
+                printf("Função 1.\n");
             }
             #pragma omp section
             {
-                // Apenas uma thread executa essa função
-                printf("Função 2\n");
+                // Apenas uma thread executa esta seção.
+                printf("Função 2.\n");
             }
         }
-        // Todas as threads executam essa função
+        // Todas as threads executam esta instrução.
         printf("Função executada por todas as threads!\n");
     }
     return 0;

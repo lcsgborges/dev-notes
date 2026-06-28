@@ -7,8 +7,8 @@
 ## Instalação de ferramentas úteis
 
 ```bash
-go install golang.org/x/tools/gopls@latest # LSP
-go install honnef.co/go/tools/cmd/staticcheck@latest # Linter
+go install golang.org/x/tools/gopls@latest
+go install honnef.co/go/tools/cmd/staticcheck@latest
 ```
 
 ---
@@ -17,33 +17,33 @@ go install honnef.co/go/tools/cmd/staticcheck@latest # Linter
 
 ### Módulos
 
-Em Go, um módulo representa o projeto ou biblioteca como um todo, definido pelo arquivo `go.mod`, contendo um ou mais pacotes e suas dependências.
+Em Go, um módulo é uma coleção de pacotes versionados em conjunto. Ele é definido por um arquivo `go.mod` na raiz de sua árvore de diretórios.
 
-Ele agrupa os pacotes do projeto, controla o caminho de importação, gerencia as dependências externas e define a versão do Go utilizada no projeto.
+O arquivo define o caminho do módulo, registra dependências e inclui a versão da linguagem Go adotada pelo módulo.
 
-Uma boa prática para nomear módulos é usar o caminho do repositório em que o projeto ou a biblioteca está hospedado. Por exemplo: `go mod init github.com/lcsgborges/projectGo`.
+Quando o módulo será publicado, normalmente usamos o caminho pelo qual ele poderá ser importado. Por exemplo: `go mod init github.com/lcsgborges/project-go`.
 
 ### Pacotes
 
-Em Go, um pacote representa um conjunto de arquivos `.go` em uma mesma pasta, com o mesmo nome de `package`, que agrupam código relacionado.
+Em Go, um pacote é formado pelos arquivos `.go` de um mesmo diretório que participam da compilação e declaram o mesmo nome de pacote.
 
 Cada pasta representa um pacote. Por isso, todos os arquivos `.go` dentro da mesma pasta normalmente devem declarar o mesmo `package`.
 
-Existe um pacote especial chamado `package main`. Ele indica que aquele pacote será compilado como um executável.
+Um pacote chamado `main` pode ser compilado como um programa executável.
 
 Para que um `package main` seja executável, ele precisa possuir uma função `main`:
 
 ```go
 func main() {
-    // Ponto de entrada da aplicação
+    // Ponto de entrada da aplicação.
 }
 ```
 
-A função `main` é o ponto de entrada da aplicação, ou seja, é onde a execução do programa começa.
+A função `main` é o ponto de entrada da aplicação, ou seja, o local em que a execução do programa começa.
 
 ---
 
-## Hello World em Go
+## “Olá, mundo!” em Go
 
 ```go
 package main
@@ -51,7 +51,7 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("Hello, World!")
+	fmt.Println("Olá, mundo!")
 }
 ```
 
@@ -65,13 +65,12 @@ Go é uma linguagem compilada, ou seja, precisamos compilar nosso arquivo para t
 go build -o main.exe main.go
 ```
 
-Nesse caso, usamos a flag `-o`, que significa _output_, e o arquivo executável passa a se chamar `main.exe`. Para executá-lo, basta usar o comando `./main.exe`.
+Nesse caso, usamos a opção `-o` para definir o nome do arquivo de saída como `main.exe`. Para executá-lo em um ambiente compatível, usamos `./main.exe`.
 
 Além disso, em Go, conseguimos fazer compilação cruzada (_cross-compilation_), ou seja, podemos compilar um arquivo `.go` para um sistema operacional diferente do nosso, informando o sistema em que ele será executado e a arquitetura do processador. Por exemplo:
 
 ```bash
-# Vamos supor que estamos em uma máquina Linux e queremos compilar nosso
-# código para Windows, podemos simplesmente passar o seguinte comando:
+# Em uma máquina Linux, gera um executável para Windows em AMD64.
 
 GOOS=windows GOARCH=amd64 go build -o main.exe main.go
 ```
@@ -82,21 +81,21 @@ Se quisermos testar o código rapidamente, podemos usar o comando `go run`. Inte
 
 ## Nomes exportados e não exportados
 
-Em Go, podemos ter nomes exportados e não exportados. A regra é a seguinte: se um identificador começar com letra **minúscula**, ele não será exportado; se começar com letra maiúscula, será exportado e poderá ser acessado por outros pacotes. Um identificador não exportado só pode ser acessado dentro do próprio pacote.
+Em Go, a primeira letra de um identificador determina sua visibilidade. Um nome iniciado por uma letra maiúscula Unicode é exportado e pode ser acessado por outros pacotes. Os demais identificadores ficam restritos ao próprio pacote.
 
 Também podemos definir um nome alternativo para o pacote durante a importação. Por exemplo:
 
 ```go
 package main
 
-import io "fmt"
+import output "fmt"
 
 func main() {
-    io.Println("Hello")
+	output.Println("Olá!")
 }
 ```
 
-No exemplo acima, atribuímos o nome `io` ao pacote `fmt`, de forma semelhante ao `as` usado em Python.
+No exemplo acima, atribuímos o nome local `output` ao pacote `fmt`.
 
 Podemos importar um pacote com `.` antes do caminho, integrando seus identificadores exportados ao escopo do arquivo atual. Por exemplo, com `import . "fmt"`, podemos usar `Println` sem escrever `fmt.Println`, mas essa prática não é recomendada.
 
@@ -107,12 +106,12 @@ Também podemos usar `_` para importar um pacote. Isso executa a inicialização
 Uma função em Go é semelhante às funções de outras linguagens: recebe argumentos, processa dados e pode retornar um resultado.
 
 ```go
-func multi(a int, b int) int {
+func multiply(a, b int) int {
     return a * b
 }
 ```
 
-Podemos retornar mais de um valor, como em `func swap(a, b int) (int, int) {}`, e também podemos nomear esses retornos. Por exemplo: `func div(a, b int) (result int, remainder int) {}`. Ao nomear os valores de retorno, podemos usar o padrão _naked return_, em que escrevemos apenas `return`, sem informar os valores. Esse recurso deve ser usado com cautela, pois pode prejudicar a legibilidade.
+Podemos retornar mais de um valor. Por exemplo: `func swap(a, b int) (int, int) { return b, a }`. Também podemos nomear os valores retornados. Ao fazer isso, é possível usar um *naked return*, escrevendo apenas `return`; esse recurso deve ser usado com cautela, pois pode prejudicar a legibilidade.
 
 Podemos ter funções que retornam outras funções, chamadas de _higher-order functions_. Por exemplo:
 
@@ -122,13 +121,13 @@ package main
 import "fmt"
 
 func main() {
-    fmt.Printf("Result = %d\n", mult2(5)())
+	fmt.Printf("Resultado: %d.\n", mult2(5)())
 }
 
 func mult2(x int) func() int {
-    return func() int {
-        return x * 2
-    }
+	return func() int {
+		return x * 2
+	}
 }
 ```
 
@@ -147,11 +146,11 @@ Em Go, as variáveis podem ser declaradas em **escopo de função** ou **escopo 
 Ainda podemos declarar variáveis de algumas formas:
 
 ```go
-var x int = 10 // Jeito tradicional
-var x = 10 // Com inferência de tipo
-x := 10 // Short syntax => válido apenas em escopo de função
+var x int = 10 // Declaração com tipo explícito.
+var y = 10     // Declaração com inferência de tipo.
+z := 10        // Declaração curta, válida somente dentro de funções.
 
-var name, lastname string // Variáveis do mesmo tipo 'string' sem valor inicial
+var name, lastName string // Duas variáveis string com valor inicial vazio.
 ```
 
 Não podemos declarar apenas como `var name`, pois nesse caso, o compilador não sabe o tipo da variável. Na mesma linha, podemos declarar variáveis de tipos diferentes, caso elas já sejam inicializadas com valor: `var name, age = "João", 10`.
@@ -164,47 +163,45 @@ Em Go, temos alguns tipos bem comuns:
 
 ### Inteiros com sinal
 
-- `int`: é o padrão e depende da arquitetura, podendo ser int32 ou int64
-- `int8`
-- `int16`
-- `int32` = `rune`
-- `int64`
+- `int`: tipo inteiro padrão; seu tamanho depende da implementação e normalmente é de 32 ou 64 bits.
+- `int8`.
+- `int16`.
+- `int32`; `rune` é um nome alternativo para esse tipo.
+- `int64`.
 
 ### Inteiros sem sinal (_unsigned_, ou seja, não negativos)
 
-- `uint`: segue o mesmo padrão da arquitetura do int
-- `uint8` = `byte`
-- `uint16`
-- `uint32`
-- `uint64`
+- `uint`: possui o mesmo tamanho que `int` na implementação.
+- `uint8`; `byte` é um nome alternativo para esse tipo.
+- `uint16`.
+- `uint32`.
+- `uint64`.
 
 ### Números decimais
 
-- `float32`
-- `float64`
+- `float32`.
+- `float64`.
 
 ### Números complexos
 
-- `complex64`
-- `complex128`
+- `complex64`.
+- `complex128`.
 
 ### Strings
 
-- `string`
+- `string`.
 
 ### Booleanos
 
-- `bool`
+- `bool`.
 
 ### Conversão de tipos
 
 Também podemos converter um valor de um tipo para outro quando a conversão for permitida. Exemplo:
 
 ```go
-func main() {
-    var x = 10
-    var y = float32(10)
-}
+x := 10
+y := float32(x)
 ```
 
 No exemplo acima, estamos convertendo um valor do tipo `int` em `float32`.
@@ -217,7 +214,7 @@ Ao converter um inteiro para `string`, o valor é interpretado como um ponto de 
 
 Em Go, as constantes não podem ter seus valores alterados depois de inicializadas e não podem ser declaradas com a **sintaxe curta**. Exemplo: `const x int = 10`.
 
-Apenas alguns tipos podem ser constantes, geralmente valores numéricos, strings e booleanos.
+Constantes podem representar valores booleanos, caracteres, inteiros, números de ponto flutuante, números complexos e *strings*.
 
 ---
 
@@ -236,16 +233,19 @@ Essa declaração é válida porque `x` é uma constante. Os elementos podem ou 
 
 ---
 
-## Loop em Go
+## Laços em Go
 
 Em Go, temos apenas o laço `for`; não existe `while` na linguagem. A sintaxe é semelhante à de C, mas não usa parênteses. Exemplo:
 
 ```go
 func main() {
     sum := 0
+
     for i := 0; i < 10; i++ {
-        fmt.Println("Sum = ", sum)
+        sum += i
     }
+
+    fmt.Println("Soma:", sum)
 }
 ```
 
@@ -259,19 +259,19 @@ package main
 import "fmt"
 
 func main() {
-    fruits := [5]string {"apple", "banana", "orange", "kiwi", "lemon"}
-    for _, fruit := range fruits {
-        fmt.Println(fruit)
-    }
+	fruits := [5]string{"maçã", "banana", "laranja", "kiwi", "limão"}
+	for _, fruit := range fruits {
+		fmt.Println(fruit)
+	}
 }
 ```
 
-Podemos usar `range` com um inteiro para repetir um bloco determinada quantidade de vezes:
+Desde o Go 1.22, podemos usar `range` com um inteiro para repetir um bloco determinada quantidade de vezes:
 
 ```go
 func main() {
     for range 10 {
-        fmt.Println("Hello") // Imprime "Hello" 10 vezes
+        fmt.Println("Olá!") // Imprime a mensagem dez vezes.
     }
 }
 ```
@@ -282,7 +282,7 @@ func main() {
 
 As estruturas condicionais em Go são semelhantes às de outras linguagens: `if`, `else if` e `else`. Uma diferença é a possibilidade de declarar uma variável na própria instrução `if`, o que é útil, por exemplo, no tratamento de erros:
 
-``` go
+```go
 func main() {
     if num := math.Sqrt(4); num < 5 {
         fmt.Println("Menor que 5")

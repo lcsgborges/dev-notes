@@ -1,75 +1,74 @@
-# Java - Primeiros Passos
+# Java — primeiros passos
 
 ## Introdução
 
 Java é uma linguagem orientada a objetos. Seu código-fonte é compilado para bytecode, que é executado pela máquina virtual Java.
 
-- Código compilado para bytecode e executado em uma máquina virtual (JVM)
-- Portável, segura e robusta
-- Pode ser executada em vários tipos de dispositivos
+- O código é compilado para *bytecode* e executado por uma máquina virtual Java (JVM).
+- A plataforma oferece portabilidade, gerenciamento automático de memória e verificações em tempo de execução.
+- Implementações compatíveis estão disponíveis para diferentes sistemas e dispositivos.
 
-- **Java ME**: Java Micro Edition - dispositivos embarcados e móveis (IoT)
-- **Java SE**: Java Standard Edition - core (desktops e servidores)
-- **Java EE**: Java Enterprise Edition - aplicações corporativas
-- **JavaFX**: plataforma de software multimídia
+- **Java ME**: Java Platform, Micro Edition, voltada a dispositivos embarcados.
+- **Java SE**: Java Platform, Standard Edition, base da plataforma para aplicações de propósito geral.
+- **Jakarta EE**: sucessora do Java EE para aplicações corporativas e serviços web.
+- **JavaFX**: conjunto de APIs para interfaces gráficas.
 
 ### Java SE
 
 ```mermaid
 flowchart LR
-    A["Programa .java"] -->|Pré-compilação feita pelo javac<br/>transforma .java em .class| B["Bytecode .class"]
-    B -->|Compilação just-in-time<br/>JIT| C["Código de máquina"]
+    A["Código-fonte .java"] -->|Compilação com javac| B["Bytecode .class"]
+    B -->|Interpretação e compilação JIT| C["Execução pela JVM"]
 ```
 
 Java adota o conceito WORA (_write once, run anywhere_).
 
-- Uma **aplicação** Java é composta por **classes**
-- Um **pacote** é um conjunto de classes relacionadas (`package`). Exemplo: `entities`, `services` e `repositories`
-- Um **módulo** é um agrupamento lógico de pacotes relacionados. Exemplo: módulo financeiro, contendo `entities`, `services` e `repositories`
-- Uma **aplicação** é um agrupamento de módulos relacionados. Exemplo: sistema de comércio eletrônico
+- Uma **aplicação** Java é formada por classes, interfaces e outros tipos.
+- Um **pacote** cria um espaço de nomes e agrupa tipos relacionados. Exemplos: `com.example.entities` e `com.example.services`.
+- Um **módulo** do Java Platform Module System agrupa pacotes, declara dependências e controla quais pacotes são exportados por meio de `module-info.java`.
+- Uma aplicação pode usar um ou mais módulos, mas a modularização explícita não é obrigatória.
 
 Instalação do JDK:
 
-> Linux: sudo apt install openjdk-25-jdk
+> Em distribuições baseadas em Debian, `sudo apt install default-jdk` instala o JDK padrão disponibilizado pelos repositórios configurados.
 
-### Orientação a Objetos
+### Orientação a objetos
 
-Java é uma linguagem de programação orientada a objetos. Isso significa que em Java tudo é escrito em termos de classes e objetos. Os pilares da programação orientada a objetos (POO) são:
+Java organiza grande parte do código em classes e objetos, embora também possua tipos primitivos. Conceitos importantes da programação orientada a objetos incluem:
 
-1. Classe e objeto
-2. Encapsulamento
-3. Abstração
-4. Herança
-5. Polimorfismo
+1. Classes e objetos.
+2. Encapsulamento.
+3. Abstração.
+4. Herança.
+5. Polimorfismo.
 
 ### JVM (Java Virtual Machine)
 
-É um programa que carrega e executa aplicações Java, convertendo o bytecode em código de máquina durante a execução. A JVM também gerencia recursos enquanto as aplicações são executadas. Graças à JVM, os programas escritos em Java podem funcionar em qualquer plataforma de hardware e software que possua uma implementação compatível, tornando-se independentes da plataforma em que são executados.
+A JVM carrega, verifica e executa *bytecode*, usando interpretação e, conforme a implementação, compilação *just-in-time*. Ela também gerencia recursos como memória e coleta de lixo. Um arquivo `.class` pode ser executado em plataformas que possuam uma JVM compatível com os recursos utilizados.
 
 ### Componentes
 
-O ecossistema Java inclui componentes de desenvolvimento (JDK) e de execução (JRE). Para desenvolver aplicações, é necessário ter o JDK instalado. Para executar uma aplicação, é necessário um ambiente de execução Java compatível.
+O ecossistema Java inclui ferramentas de desenvolvimento e componentes de execução. Para desenvolver aplicações, instalamos um JDK. Para executá-las, precisamos de um ambiente compatível, que pode ser fornecido pelo próprio JDK ou por uma imagem de *runtime* criada para a aplicação.
 
 #### JDK
 
-- Composto pelo compilador `javac`, pela JVM e por outras ferramentas de desenvolvimento
-- Visualizador de applets, bibliotecas de desenvolvimento
-- Programa para composição de documentação (javadoc)
-- Depurador básico de programas e uma implementação da JRE
+- Inclui o compilador `javac`, ferramentas de empacotamento e uma implementação da JVM.
+- Fornece bibliotecas e ferramentas de desenvolvimento.
+- Inclui `javadoc` para gerar documentação e `jdb` para depuração.
 
 #### JRE
 
-- É composta por uma JVM e por um conjunto de bibliotecas que permitem a execução de software em Java
-- Permite a execução de programas; portanto, o código Java precisa ter sido compilado pelo JDK para gerar os arquivos `.class`
+- Um ambiente de execução inclui uma JVM e as bibliotecas necessárias para executar a aplicação.
+- O código-fonte normalmente é compilado para arquivos `.class` antes da execução.
 
 ---
 
-## Hello World em Java
+## “Olá, mundo!” em Java
 
 ```java
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        System.out.println("Olá, mundo!");
     }
 }
 ```
@@ -84,18 +83,18 @@ Os tipos primitivos em Java são:
 
 | Tipo | Tamanho | Valor padrão dos campos |
 | :--: | :-----: | :----------: |
-| byte | 1 byte | 0 |
-| short | 2 bytes | 0 |
-| int | 4 bytes | 0 |
-| long | 8 bytes | 0L |
-| float | 4 bytes | 0.0f |
-| double | 8 bytes | 0.0 |
-| char | 2 bytes | '\u0000' |
-| boolean | Não especificado | false |
+| `byte` | 1 byte | `0` |
+| `short` | 2 bytes | `0` |
+| `int` | 4 bytes | `0` |
+| `long` | 8 bytes | `0L` |
+| `float` | 4 bytes | `0.0f` |
+| `double` | 8 bytes | `0.0` |
+| `char` | 2 bytes | `'\u0000'` |
+| `boolean` | Não especificado | `false` |
 
 Temos ainda outros tipos, como `String`, que é uma classe. Por exemplo: `String nome = "Lucas";`.
 
-O padrão de nomenclatura para variáveis em Java é o camelCase (por exemplo, `myFirstVar`), enquanto para classes usamos PascalCase (por exemplo, `MyFirstClass`).
+A convenção de nomenclatura para variáveis em Java é *lower camel case*, como `myFirstVar`, enquanto classes normalmente usam *upper camel case*, como `MyFirstClass`.
 
 ---
 
@@ -109,7 +108,7 @@ import java.util.Locale;
 public class Main {
     public static void main(String[] args) {
         Locale.setDefault(Locale.US);
-        // Nesse caso, usará o separador decimal dos EUA (".")
+        // Usa o ponto como separador decimal na formatação regional.
     }
 }
 ```
@@ -128,7 +127,7 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         int num = sc.nextInt();
         System.out.println("Número: " + num);
-        // Exemplo de concatenação em Java (printf tem sintaxe semelhante à de C)
+        // Exemplo de concatenação em Java.
         sc.close();
     }
 }
@@ -160,7 +159,7 @@ if (idade < 18) {
 }
 ```
 
-Além disso, temos o `switch-case`, muito parecido com C também:
+Além disso, temos a instrução `switch`, semelhante à de C:
 
 ```java
 switch (valor) {
@@ -182,14 +181,14 @@ switch (valor) {
 Temos também o operador ternário:
 
 ```java
-boolean maiorIdade = (idade >= 18) ? true : false;
+String categoria = idade >= 18 ? "adulto" : "menor de idade";
 ```
 
 ## Estruturas repetitivas
 
 Em Java, temos as estruturas repetitivas `for`, `while` e `do-while`:
 
-Exemplo de for:
+Exemplo de `for`:
 
 ```java
 for (int i = 0; i < 10; i++) {
@@ -197,7 +196,7 @@ for (int i = 0; i < 10; i++) {
 }
 ```
 
-Exemplo de while:
+Exemplo de `while`:
 
 ```java
 int i = 0;
@@ -211,7 +210,7 @@ while (true) {
 }
 ```
 
-Exemplo de do-while:
+Exemplo de `do-while`:
 
 ```java
 int x = 10;
@@ -219,7 +218,7 @@ int x = 10;
 do {
     System.out.println("VALOR DE X = " + x);
     x++;
-} while(x < 20);
+} while (x < 20);
 ```
 
 ## Funções
@@ -228,27 +227,27 @@ Em Java, as funções declaradas dentro de classes são chamadas de métodos. El
 
 As strings em Java têm alguns métodos interessantes, por exemplo:
 
-- `.toLowerCase()`: transforma a string em minúscula
-- `.toUpperCase()`: transforma a string em maiúscula
-- `.replace(char1 | string1, char2 | string2)`: troca as ocorrências de `char1` ou `string1` por `char2` ou `string2`
-- `.length()`: retorna o tamanho da string
-- `.trim()`: remove espaços em branco do início e do fim da string
-- `.substring(inicio, fim)`: obtém uma parte da string original no intervalo `[inicio, fim)`
-- `.indexOf(string)`: obtém o índice da primeira ocorrência da substring ou `-1` se ela não existir
-- `.split(regex)`: divide a string usando a expressão regular informada e retorna um array
+- `.toLowerCase()`: converte a *string* para minúsculas conforme as regras aplicáveis.
+- `.toUpperCase()`: converte a *string* para maiúsculas conforme as regras aplicáveis.
+- `.replace(alvo, substituto)`: troca as ocorrências do alvo pelo valor substituto.
+- `.length()`: retorna a quantidade de unidades de código UTF-16, que pode ser diferente da quantidade de caracteres Unicode percebidos pelo usuário.
+- `.trim()`: remove caracteres com valor menor ou igual a `U+0020` das extremidades; `strip()` considera espaços em branco Unicode.
+- `.substring(inicio, fim)`: obtém uma parte da *string* no intervalo `[inicio, fim)`.
+- `.indexOf(string)`: obtém o índice da primeira ocorrência ou `-1` se ela não existir.
+- `.split(regex)`: divide a *string* usando a expressão regular informada e retorna um *array*.
 
 Além desses métodos, há outros que podem ser consultados na documentação.
 
 Para criar um método, precisamos seguir o seguinte formato:
 
 ```text
-[modificador de acesso] [tipo de retorno] [nome do método]() {}
+[modificadores] [tipo de retorno] [nome do método]([parâmetros]) { ... }
 ```
 
 Por exemplo:
 
 ```java
-public double soma(double x, double y) {
+public double somar(double x, double y) {
     return x + y;
 }
 ```

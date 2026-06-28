@@ -1,52 +1,52 @@
-# Memória de Processo: Text, Data, BSS, Heap e Stack
+# Memória de processo: *text*, *data*, BSS, *heap* e pilha
 
-Um processo é um **espaço de memória organizado**, controlado pelo kernel, com regiões diferentes para finalidades diferentes.
+Um processo possui um **espaço de endereçamento virtual**, controlado pelo kernel e organizado em mapeamentos com finalidades e permissões diferentes.
 
-## Programa no disco x Processo na memória
+## Programa no disco e processo na memória
 
-- Programa: arquivo executável parado no disco
-- Processo: programa carregado e executando na memória
+- **Programa**: conjunto de instruções e dados armazenado em um arquivo executável.
+- **Processo**: instância de um programa em execução.
 
-Quando compilamos um arquivo `gcc main.c -o app`, apenas criamos um executável no disco. Quando rodamos `./app`, o shell pede ao kernel para executar esse arquivo. No Linux, isso acontece através da system call: `execve()`. O kernel carrega o executável na memória e cria um processo.
+Quando executamos `gcc main.c -o app`, criamos um arquivo executável. Ao executar `./app`, o *shell* normalmente cria um processo filho e usa a chamada de sistema `execve()` para substituir o programa desse processo por `app`.
 
-Quando o kernel cria um processo, ele organiza a memória em regiões. O modelo clássico é:
+O diagrama abaixo apresenta um modelo clássico e simplificado do espaço de endereçamento. A disposição real varia conforme o sistema, a arquitetura, o carregador, o executável e mecanismos como ASLR:
 
 ```mermaid
 flowchart TB
     TOP["Endereços altos"]
-    
+
     subgraph STACK[" Stack "]
         direction TB
         S1["Pilha de chamadas"]
         S2["Variáveis locais"]
         S3["Parâmetros de funções"]
     end
-    
+
     FREE["espaço livre"]
-    
+
     subgraph HEAP[" Heap "]
         direction TB
         H1["Memória dinâmica"]
         H2["malloc(), calloc(), realloc()"]
     end
-    
+
     subgraph BSS[" BSS "]
-        B1["Globais/static sem valor"]
+        B1["Globais e static zeradas"]
     end
-    
+
     subgraph DATA[" Data "]
-        D1["Globais/static inicializadas"]
+        D1["Globais e static inicializadas"]
     end
-    
+
     subgraph RODATA[" Rodata "]
         R1["Dados somente leitura"]
-        R2["Strings literais"]
+        R2["Literais de string"]
     end
-    
+
     subgraph TEXT[" Text "]
         T1["Código compilado"]
     end
-    
+
     BOTTOM["Endereços baixos"]
 
     TOP --> STACK
@@ -63,21 +63,21 @@ flowchart TB
     style FREE fill:#f3f4f6,stroke:#6b7280,color:#374151,stroke-dasharray: 5 5
 ```
 
-## Memória Virtual
+## Memória virtual
 
 Um processo não acessa diretamente a RAM física. Ele acessa endereços virtuais. Exemplo:
 
 ```c
 int x = 10;
 
-printf("%p\n", &x);
+printf("%p\n", (void *)&x);
 ```
 
 ```text
 0x7ffd1a2b3c4c
 ```
 
-Esse endereço não é necessariamente um endereço físico real da RAM. É um **endereço virtual**. O processo acha que tem um espaço de memória próprio, isolado dos outros processos. Cada processo pode ter o mesmo endereço virtual, mas apontando para lugares físicos diferentes.
+Esse valor é um **endereço virtual**, não um endereço físico da RAM. Cada processo possui seu próprio espaço de endereçamento. Assim, processos diferentes podem usar o mesmo endereço virtual, mas associá-lo a páginas físicas diferentes ou até a páginas que ainda não estão presentes na RAM.
 
 Exemplo conceitual:
 
@@ -92,13 +92,13 @@ Exemplo conceitual:
     end
 ```
 
-Quem faz essa tradução: `CPU + MMU + tabelas de páginas mantidas pelo kernel`. A MMU é a **Memory Management Unit**, uma parte do hardware responsável por traduzir endereços virtuais para endereços físicos.
+A **unidade de gerenciamento de memória** (MMU, de *memory management unit*) realiza a tradução com base em tabelas de páginas configuradas pelo kernel. A CPU também utiliza estruturas de cache, como a TLB, para acelerar essas traduções.
 
 A memória virtual existe por vários motivos explicados abaixo.
 
 ### Isolamento
 
-Um processo não pode sair lendo a memória de outro processo. O `Processo A` não pode acessar livremente o `Processo B`. Isso evita que um programa bugado ou malicioso destrua outro.
+Em condições normais, um processo não pode acessar livremente a memória de outro. Esse isolamento reduz o impacto de programas defeituosos ou maliciosos.
 
 ### Segurança
 
@@ -109,7 +109,7 @@ int *p = NULL;
 *p = 10;
 ```
 
-A CPU detecta o acesso inválido, o kernel é avisado, e o processo recebe `SIGSEGV`, daí vem o famoso **Segmentation fault**.
+Desreferenciar um ponteiro nulo produz comportamento indefinido em C. Em sistemas semelhantes ao Unix, esse acesso normalmente é detectado pelo hardware, e o kernel envia `SIGSEGV` ao processo, resultando na mensagem **Segmentation fault**.
 
 ### Organização
 
@@ -123,22 +123,22 @@ Heap   -> leitura + escrita
 Rodata -> somente leitura
 ```
 
-Assim, se tentarmos escrever na região de código ou em uma string literal, pode dar erro.
+Assim, uma tentativa de escrever em um mapeamento sem permissão de escrita normalmente provoca uma falha de proteção.
 
 ### Eficiência
 
-Vários processos podem compartilhar a mesma região de código de uma biblioteca. Exemplo: o código da `libc` pode ser carregado uma vez na memória física e mapeado nos processos que usam ela.
+Vários processos podem compartilhar páginas físicas que contêm o código de uma biblioteca. Por exemplo, as mesmas páginas da `libc` podem ser mapeadas nos espaços virtuais dos processos que a utilizam.
 
 ## Arquivo executável: ELF
 
-No Linux, os executáveis geralmente usam o formato **ELF** (Executable and Linkable Format). Um executável ELF possui várias partes, chamadas de seções e segmentos. Algumas seções importantes:
+No Linux, os executáveis geralmente usam o formato **ELF** (*Executable and Linkable Format*). Seções organizam informações para ligação e depuração, enquanto segmentos descrevem o que o carregador deve mapear na memória. Algumas seções comuns são:
 
-- .text: código compilado
-- .rodata: dados somente leitura
-- .data: variáveis globais inicializadas
-- .bss: variáveis globais não inicializadas
-- .symtab: tabela de símbolos, se existir
-- .debug: informações de debug, se compilado com -g
+- `.text`: código compilado.
+- `.rodata`: dados somente para leitura.
+- `.data`: dados estáticos inicializados e modificáveis.
+- `.bss`: dados estáticos zerados.
+- `.symtab`: tabela de símbolos, quando presente.
+- `.debug_*`: informações de depuração, normalmente geradas com `-g`.
 
 Podemos inspecionar um programa com:
 
@@ -154,9 +154,9 @@ objdump -h ./app
 size ./app
 ```
 
-## Região Text
+## Região *text*
 
-A região **Text** contém o código compilado do programa.
+A região ***text*** contém o código compilado do programa.
 
 ```c
 int soma(int a, int b) {
@@ -172,41 +172,41 @@ add eax, esi
 ret
 ```
 
-Essas instruções ficam na região `.text`. Normalmente as permissões da região text são: `r-x`, ou seja: *readable, executable, not writable*. Isso porque se um programa pudesse modificar seu próprio código facilmente, isso abriria espaço para vários problemas.
+Essas instruções normalmente ficam em um segmento executável que inclui `.text`. Em geral, o mapeamento possui permissões `r-x`: leitura e execução, sem escrita. Essa separação dificulta a modificação acidental ou maliciosa do código.
 
-## Região Rodata
+## Região *rodata*
 
-A região `.rodata` guarda dados somente de leitura. Exemplo: `char *msg = "Olá, Mundo!\n";`. A string literal `"Olá, Mundo!\n"` normalmente fica em `.rodata`. O ponteiro `msg` pode estar na `stack` ou em `data`, dependendo de onde foi declarado, mas o conteúdo literal fica numa região somente leitura.
+A seção `.rodata` normalmente guarda dados somente para leitura. Em `const char *msg = "Olá, mundo!\n";`, por exemplo, o literal costuma ficar em um mapeamento sem permissão de escrita. A variável `msg` pode ter armazenamento automático ou estático, dependendo do local em que foi declarada.
 
 Exemplo perigoso:
 
 ```c
 #include <stdio.h>
 
-int main() {
+int main(void) {
     char *name = "Lucas";
-    name[0] = "M";
+    name[0] = 'M';
     printf("%s\n", name);
     return 0;
 }
 ```
 
-Isso pode causar `Segmentation fault`, pois tentamos modificar uma string literal. O correto seria: `char name[] = "Lucas";`, pois aqui `name` é um array local na stack, contendo apenas uma cópia modificável da string.
+Modificar um literal de *string* produz comportamento indefinido e frequentemente causa `Segmentation fault`. Para criar uma cópia local modificável, usamos `char name[] = "Lucas";`.
 
 ## Região Data
 
-A região `.data` guarda variáveis globais ou `static` que possuem valor inicialmente diferente de zero. Exemplo:
+A seção `.data` normalmente guarda variáveis modificáveis com duração estática e valor inicial diferente de zero. Exemplo:
 
 ```c
 int total = 10;
 static int contador = 5;
 ```
 
-Essas variáveis já têm valor conhecido no momento da compilação. Então o executável precisa carregar esse valor e elas existem enquanto o programa estiver rodando.
+O arquivo precisa armazenar os valores iniciais dessas variáveis, que existem durante toda a execução do programa.
 
 ## Região BSS
 
-A região `.bss` guarda variáveis globais ou `static` que não foram inicializadas explicitamente, ou foram inicializadas com zero. Exemplo:
+A seção `.bss` normalmente representa variáveis modificáveis com duração estática que começam com zero. Exemplo:
 
 ```c
 int contador;
@@ -214,14 +214,14 @@ static int total;
 int valor = 0;
 ```
 
-Essas variáveis começam com zero. Váriaveis globais não inicializadas são automaticamente zeradas.
+Essas variáveis começam com zero. Variáveis com duração estática que não possuem inicializador explícito são automaticamente zeradas pela linguagem.
 
 ```c
 #include <stdio.h>
 
 int variavel;
 
-int main() {
+int main(void) {
     printf("%d\n", variavel);
     return 0;
 }
@@ -232,7 +232,7 @@ O `.bss` ocupa espaço na memória do processo, mas não necessariamente ocupa o
 ```c
 char grande[100000000];
 
-int main() {
+int main(void) {
     return 0;
 }
 ```
@@ -256,21 +256,21 @@ size bss:
    1228	   544	 100000032	100001804	5f5e80c	  bss
 ```
 
-O executável não tem `100MB`, tem apenas `16KB`, mas o `size` mostra um BSS grande.
+Nesse exemplo, o executável não ocupa 100 MB no disco: possui apenas cerca de 16 KB. Entretanto, `size` mostra que a seção BSS representa aproximadamente 100 MB na imagem carregada.
 
 ## Stack
 
 A **stack** é a pilha de execução do processo. Guarda principalmente:
 
-- chamadas de funções
-- variáveis locais
-- parâmetros
-- endereços de retorno
-- registradores salvos
+- Chamadas de função.
+- Algumas variáveis locais.
+- Alguns parâmetros.
+- Endereços de retorno.
+- Registradores salvos.
 
 ### Stack frame
 
-Cada chamada de função cria um **stack frame**. Exemplo:
+Uma chamada de função pode criar um **quadro de pilha** (*stack frame*), embora otimizações possam eliminar ou modificar essa estrutura. Exemplo:
 
 ```c
 int soma(int a, int b) {
@@ -281,30 +281,49 @@ int soma(int a, int b) {
 
 O stack frame pode conter:
 
-- parâmetro `a`
-- parâmetro `b`
-- variável `res`
-- endereço de retorno
-- registradores salvos
-- alinhamento
+- Parâmetro `a`.
+- Parâmetro `b`.
+- Variável `res`.
+- Endereço de retorno.
+- Registradores salvos.
+- Espaço de alinhamento.
 
 O endereço de retorno é fundamental, pois quando uma função termina, a CPU precisa saber para onde voltar.
 
-A **stack** cresce para baixo, enquanto a **heap** cresce para cima. Se crescerem demais, podem colidir ou atingir áreas inválidas.
+Em uma disposição comum, a pilha cresce em direção a endereços menores, enquanto a área tradicional administrada por `brk()` cresce em direção a endereços maiores. Isso é uma convenção da plataforma, não uma exigência da linguagem C. Alocações também podem usar mapeamentos independentes.
 
 ### Stack overflow
 
-A stack tem tamanho limitado. Se fizermos recursão infinita, a stack cresce até atingir uma região proibida. E geralmente a stack é bem pequena comparada com a heap.
+A pilha possui um limite. Uma recursão sem condição de parada pode esgotá-la e produzir comportamento indefinido, normalmente manifestado como uma falha de segmentação.
 
 ## Heap
 
-O **heap** é usado para memória dinâmica. Ele serve para situações em que não sabemos, em tempo de compilação, quanto espaço vamos precisar. Exemplo:
+O ***heap*** é usado pelo alocador para fornecer memória dinâmica. Ele é útil quando o tamanho ou o tempo de vida de uma alocação depende da execução. Exemplo:
 
 ```c
-int n;
-scanf("%d", &n);
+#include <stdio.h>
+#include <stdlib.h>
 
-int *vet = malloc(n * sizeof(int));
+int main(void) {
+    int n;
+
+    if (scanf("%d", &n) != 1 || n <= 0) {
+        fprintf(stderr, "Tamanho inválido.\n");
+        return 1;
+    }
+
+    int *vet = calloc((size_t)n, sizeof(*vet));
+
+    if (vet == NULL) {
+        perror("calloc");
+        return 1;
+    }
+
+    // Usa o vetor.
+
+    free(vet);
+    return 0;
+}
 ```
 
 No exemplo acima, o tamanho do vetor só é conhecido durante a execução.
@@ -324,11 +343,7 @@ static int static_nao_inicializada;
 
 const char *string_literal = "Estou em rodata";
 
-void minha_funcao() {
-    printf("Endereço de minha_funcao        (.text):   %p\n", (void *) minha_funcao);
-}
-
-int main() {
+int main(void) {
     int local = 30;
     static int static_local = 40;
 
@@ -340,9 +355,8 @@ int main() {
 
     *heap = 50;
 
-    printf("PID do processo: %d\n\n", getpid());
+    printf("PID do processo: %ld.\n\n", (long)getpid());
 
-    printf("Endereço de minha_funcao        (.text):   %p\n", (void *) minha_funcao);
     printf("Endereço de string literal      (.rodata): %p\n", (void *) string_literal);
 
     printf("Endereço global_inicializada    (.data):   %p\n", (void *) &global_inicializada);
@@ -355,7 +369,7 @@ int main() {
     printf("Endereço heap                   (heap):    %p\n", (void *) heap);
     printf("Endereço local                  (stack):   %p\n", (void *) &local);
 
-    printf("\nPressione ENTER para finalizar...\n");
+    printf("\nPressione Enter para finalizar.\n");
     getchar();
 
     free(heap);
@@ -370,7 +384,6 @@ Compilando com `gcc -Wall -Wextra -O0 -g memoria.c -o memoria`. Executando, temo
 04:56:14 lcsgborges@ubuntu processos ±|main ✗|→ ./memoria
 PID do processo: 132148
 
-Endereço de minha_funcao        (.text):   0x567071602229
 Endereço de string literal      (.rodata): 0x567071603008
 Endereço global_inicializada    (.data):   0x567071605010
 Endereço static_inicializada    (.data):   0x567071605014
@@ -380,7 +393,7 @@ Endereço static_nao_inicializada(.bss):    0x567071605030
 Endereço heap                   (heap):    0x567084f542a0
 Endereço local                  (stack):   0x7ffd199076dc
 
-Pressione ENTER para finalizar...
+Pressione Enter para finalizar.
 ```
 
 Usando o PID impresso pelo programa e executando `cat /proc/132148/maps`, temos:
@@ -415,17 +428,17 @@ ffffffffff600000-ffffffffff601000 --xp 00000000 00:00 0                  [vsysca
 
 ## Tempo de vida das regiões
 
-Cada tipo de variável tem um tempo de vida diferente:
+O armazenamento e o tempo de vida normalmente seguem estas regras. O compilador pode manter valores em registradores, e o alocador pode obter memória por mecanismos diferentes dos nomes apresentados no diagrama:
 
-1. Global
-    - Região: data
-    - Tempo de vida: processo inteiro
-2. Local
-    - Região: stack
-    - Tempo de vida: enquanto a função está executando
-3. Estática
-    - Região: data ou bss
-    - Tempo de vida: processo inteiro
-4. Dinâmica
-    - Região: heap
-    - Tempo de vida: até chamar free()
+1. **Global**:
+    - Armazenamento típico: `.data` ou `.bss`.
+    - Tempo de vida: toda a execução do programa.
+2. **Local**:
+    - Armazenamento típico: pilha ou registrador.
+    - Tempo de vida: enquanto seu bloco está ativo.
+3. **Estática**:
+    - Armazenamento típico: `.data`, `.bss` ou uma região somente para leitura.
+    - Tempo de vida: toda a execução do programa.
+4. **Dinâmica**:
+    - Armazenamento típico: área administrada pelo alocador.
+    - Tempo de vida: da alocação até `free()`.

@@ -1,21 +1,21 @@
-# Exercícios de Go — Primeiros Passos
+# Exercícios de Go — primeiros passos
 
 Conteúdos cobertos:
 
-- Pacotes
-- Nomes exportados e não exportados
-- Funções
-- Variáveis
-- Sistema de tipos e constantes
-- Arrays
-- Laços de repetição
-- Condicionais (`if`)
-- Estruturas `switch`
-- Defer
+- Pacotes.
+- Nomes exportados e não exportados.
+- Funções.
+- Variáveis.
+- Sistema de tipos e constantes.
+- *Arrays*.
+- Laços de repetição.
+- Condicionais (`if`).
+- Estruturas `switch`.
+- `defer`.
 
 ## 1. Pacotes
 
-### Exercício 01 — Usando pacotes básicos
+### Exercício 1 — usando pacotes básicos
 
 Crie um programa que importe os pacotes `fmt` e `strings`.
 
@@ -30,7 +30,7 @@ Nome original: lucas guimaraes
 Nome formatado: LUCAS GUIMARAES
 ```
 
-### Exercício 02 — Usando pacote `math`
+### Exercício 2 — usando o pacote `math`
 
 Crie um programa que calcule a raiz quadrada de um número.
 
@@ -49,9 +49,9 @@ A raiz quadrada de 64 é 8
 
 ## 2. Nomes exportados e não exportados
 
-Em Go, nomes que começam com letra maiúscula são **públicos/exportados**. Nomes que começam com letra minúscula são **privados ao pacote**.
+Em Go, identificadores iniciados por uma letra maiúscula Unicode são **exportados**. Os demais ficam restritos ao próprio pacote.
 
-### Exercício 03 — Criando pacote próprio
+### Exercício 3 — criando um pacote próprio
 
 Crie esta estrutura:
 
@@ -61,6 +61,8 @@ ex03/
   mensagens/
     mensagens.go
 ```
+
+Inicialize um módulo dentro de `ex03`, por exemplo, com `go mod init example.com/ex03`. Esse caminho será usado para importar o pacote `mensagens` em `main.go`.
 
 No arquivo `mensagens/mensagens.go`, crie:
 
@@ -88,7 +90,7 @@ Atenção: tente chamar `formatarNome` diretamente no `main.go` e veja o erro qu
 
 ## 3. Funções
 
-### Exercício 04 — Função simples
+### Exercício 4 — função simples
 
 Crie uma função chamada `somar`.
 
@@ -104,7 +106,7 @@ Exemplo:
 Resultado: 15
 ```
 
-### Exercício 05 — Função com múltiplos retornos
+### Exercício 5 — função com múltiplos retornos
 
 Crie uma função chamada `calcular`.
 
@@ -126,7 +128,7 @@ Divisão: 3
 
 Use os números `15` e `5`.
 
-### Exercício 06 — Função de validação
+### Exercício 6 — função de validação
 
 Crie uma função chamada `maiorDeIdade`.
 
@@ -146,7 +148,7 @@ Depois exiba:
 
 ## 4. Variáveis
 
-### Exercício 07 — Declaração de variáveis
+### Exercício 7 — declaração de variáveis
 
 Crie um programa usando três formas diferentes de declarar variáveis:
 
@@ -162,7 +164,7 @@ Depois exiba uma frase como:
 José tem 25 anos e mora em Brasília
 ```
 
-### Exercício 08 — Valores zero
+### Exercício 8 — valores zero
 
 Crie variáveis sem atribuir valor inicial:
 
@@ -175,7 +177,7 @@ var salario float64
 
 Exiba todas no terminal e observe os valores padrão.
 
-Resultado esperado parecido com:
+Resultado esperado semelhante a:
 
 ```txt
 Nome:
@@ -184,7 +186,7 @@ Ativo: false
 Salário: 0
 ```
 
-### Exercício 09 — Troca de valores
+### Exercício 9 — troca de valores
 
 Crie duas variáveis:
 
@@ -211,14 +213,14 @@ b = 10
 
 ## 5. Sistema de tipos e constantes
 
-### Exercício 10 — Tipos básicos
+### Exercício 10 — tipos básicos
 
 Crie variáveis dos seguintes tipos:
 
-1. `string`
-2. `int`
-3. `float64`
-4. `bool`
+1. `string`.
+2. `int`.
+3. `float64`.
+4. `bool`.
 
 Depois exiba o valor e o tipo de cada uma usando `fmt.Printf` com `%T`.
 
@@ -231,7 +233,7 @@ Lucas é do tipo string
 true é do tipo bool
 ```
 
-### Exercício 11 — Conversão de tipos
+### Exercício 11 — conversão de tipos
 
 Crie:
 
@@ -250,7 +252,7 @@ Resultado: 26.75
 
 Atenção: Go não soma `int` com `float64` diretamente.
 
-### Exercício 12 — Constantes
+### Exercício 12 — constantes
 
 Crie uma constante chamada `pi` com valor `3.14`.
 
@@ -268,7 +270,7 @@ Resultado esperado:
 Área do círculo: 78.5
 ```
 
-### Exercício 13 — Constantes com status
+### Exercício 13 — constantes para estados
 
 Crie constantes para representar status de pedido:
 
@@ -292,9 +294,9 @@ Pedido aguardando pagamento
 
 ## 6. Arrays
 
-### Exercício 14 — Array de números
+### Exercício 14 — *array* de números
 
-Crie um array com 5 números inteiros.
+Crie um *array* com cinco números inteiros.
 
 Depois:
 
@@ -313,15 +315,15 @@ Primeiro: 10
 Array atualizado: [10 99 30 40 50]
 ```
 
-### Exercício 15 — Média de notas com array
+### Exercício 15 — média de notas com *array*
 
-Crie um array com 4 notas:
+Crie um *array* com quatro notas:
 
 ```go
 notas := [4]float64{8.5, 7.0, 9.2, 6.8}
 ```
 
-Calcule a média das notas usando loop.
+Calcule a média das notas usando um laço.
 
 Resultado esperado:
 
@@ -339,7 +341,7 @@ Média: 7.88
 
 ## 7. Laços de repetição
 
-### Exercício 16 — Contador simples
+### Exercício 16 — contador simples
 
 Use um `for` para exibir os números de `1` até `10`.
 
@@ -358,7 +360,7 @@ Resultado:
 10
 ```
 
-### Exercício 17 — Soma de números
+### Exercício 17 — soma de números
 
 Crie um programa que some todos os números de `1` até `100`.
 
@@ -368,9 +370,9 @@ Resultado esperado:
 Soma total: 5050
 ```
 
-### Exercício 18 — Percorrendo array com `range`
+### Exercício 18 — percorrendo um *array* com `range`
 
-Crie um array de nomes:
+Crie um *array* de nomes:
 
 ```go
 nomes := [4]string{"Lucas", "Ana", "Carlos", "Marina"}
@@ -385,9 +387,9 @@ Use `range` para exibir:
 Índice 3: Marina
 ```
 
-### Exercício 19 — Números pares
+### Exercício 19 — números pares
 
-Use um loop para exibir apenas os números pares de `1` até `50`.
+Use um laço para exibir apenas os números pares de `1` até `50`.
 
 Resultado esperado:
 
@@ -403,7 +405,7 @@ Resultado esperado:
 
 ## 8. Condicionais (`if`)
 
-### Exercício 20 — Verificador de nota
+### Exercício 20 — verificador de nota
 
 Crie uma variável:
 
@@ -417,7 +419,7 @@ Regras:
 - Se for maior ou igual a `5` e menor que `7`, exiba `"Recuperação"`.
 - Se for menor que `5`, exiba `"Reprovado"`.
 
-### Exercício 21 — Login simples
+### Exercício 21 — *login* simples
 
 Crie duas constantes:
 
@@ -445,7 +447,7 @@ Caso contrário:
 Usuário ou senha inválidos
 ```
 
-### Exercício 22 — Par ou ímpar
+### Exercício 22 — par ou ímpar
 
 Crie uma variável `numero`.
 
@@ -461,7 +463,7 @@ O número 10 é par
 
 ## 9. Estruturas `switch`
 
-### Exercício 23 — Dia da semana
+### Exercício 23 — dia da semana
 
 Crie uma variável:
 
@@ -487,7 +489,7 @@ Resultado esperado:
 Terça
 ```
 
-### Exercício 24 — Menu de opções
+### Exercício 24 — menu de opções
 
 Crie uma variável:
 
@@ -516,7 +518,7 @@ Se a opção não existir, exiba:
 Opção inválida
 ```
 
-### Exercício 25 — Switch sem expressão
+### Exercício 25 — `switch` sem expressão
 
 Crie uma variável:
 
@@ -539,15 +541,15 @@ default:
 
 Regras:
 
-- Menor que 12: `"Criança"`
-- Menor que 18: `"Adolescente"`
-- Caso contrário: `"Adulto"`
+- Menor que 12: `"Criança"`.
+- Menor que 18: `"Adolescente"`.
+- Caso contrário: `"Adulto"`.
 
 ---
 
-## 10. Defer
+## 10. `defer`
 
-### Exercício 26 — Entendendo ordem do `defer`
+### Exercício 26 — entendendo a ordem de `defer`
 
 Crie um programa com:
 
@@ -562,7 +564,7 @@ Antes de rodar, tente responder mentalmente qual será a ordem da saída.
 
 Depois, execute o programa e veja o resultado.
 
-### Exercício 27 — Simulando abertura e fechamento de recurso
+### Exercício 27 — simulando a abertura e o fechamento de um recurso
 
 Crie uma função chamada `processarArquivo`.
 
@@ -580,7 +582,7 @@ Processando arquivo...
 Fechando arquivo...
 ```
 
-### Exercício 28 — Defer dentro de função
+### Exercício 28 — `defer` dentro de uma função
 
 Crie duas funções:
 
@@ -598,20 +600,20 @@ func segunda() {
 
 Chame as duas dentro do `main`.
 
-Observe que o `defer` executa quando a função onde ele está termina, não apenas no final do programa.
+Observe que a chamada adiada por `defer` é executada quando a função em que foi declarada termina, não apenas no final do programa.
 
 ---
 
 ## Desafios integrando vários assuntos
 
-### Desafio 01 — Calculadora simples
+### Desafio 1 — calculadora simples
 
 Crie uma calculadora usando:
 
-- Variáveis
-- Funções
-- `switch`
-- Tipos numéricos
+- Variáveis.
+- Funções.
+- `switch`.
+- Tipos numéricos.
 
 Regras:
 
@@ -619,10 +621,10 @@ Regras:
 2. Crie uma variável `operacao`.
 3. Use `switch` para decidir a operação.
 4. Crie funções para:
-   - Somar
-   - Subtrair
-   - Multiplicar
-   - Dividir
+   - Somar.
+   - Subtrair.
+   - Multiplicar.
+   - Dividir, tratando o divisor igual a zero.
 
 Exemplo:
 
@@ -638,14 +640,14 @@ Resultado:
 Resultado: 15
 ```
 
-### Desafio 02 — Sistema de notas
+### Desafio 2 — sistema de notas
 
 Crie um programa que tenha:
 
-- Array de notas
-- Laço de repetição
-- Função para calcular média
-- `if` para verificar situação
+- *Array* de notas.
+- Laço de repetição.
+- Função para calcular a média.
+- `if` para verificar a situação.
 
 Regras:
 
@@ -662,7 +664,7 @@ Média: 7.88
 Situação: Aprovado
 ```
 
-### Desafio 03 — Simulador de pedido
+### Desafio 3 — simulador de pedido
 
 Crie constantes:
 
@@ -689,9 +691,9 @@ Pedido cancelado
 Status desconhecido
 ```
 
-### Desafio 04 — Relatório de produtos
+### Desafio 4 — relatório de produtos
 
-Crie arrays separados:
+Crie *arrays* separados:
 
 ```go
 produtos := [3]string{"Mouse", "Teclado", "Monitor"}
@@ -714,7 +716,7 @@ Resultado esperado:
 Total: R$ 1070.00
 ```
 
-### Desafio 05 — Mini sistema bancário
+### Desafio 5 — minissistema bancário
 
 Use tudo que aprendeu até aqui.
 

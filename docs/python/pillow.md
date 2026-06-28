@@ -6,21 +6,30 @@ O Pillow é uma biblioteca Python usada para trabalhar com imagens.
 
 ```python
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageOps
 
 ROOT_FOLDER = Path(__file__).parent
-ORIGINAL_IMAGE = ROOT_FOLDER / 'original.jpg'
-NEW_IMAGE = ROOT_FOLDER / 'new.jpg'
+ORIGINAL_IMAGE = ROOT_FOLDER / "original.jpg"
+NEW_IMAGE = ROOT_FOLDER / "new.jpg"
 
-# pil_img = Image.open(ORIGINAL_IMAGE) ou com gerenciador de contexto:
-with Image.open(ORIGINAL_IMAGE) as pil_img:
-    width, height = pil_img.size
-    exif = pil_img.info.get('exif')  # Metadados EXIF da imagem
+with Image.open(ORIGINAL_IMAGE) as source_image:
+    # Aplica a orientação EXIF aos pixels e remove essa marca dos metadados.
+    oriented_image = ImageOps.exif_transpose(source_image)
+    exif = oriented_image.getexif()
 
-    # Nova imagem = 256 x 256
-    new_width = 256
-    new_height = 256
+    # Recorta sem distorcer para produzir uma imagem de 256 por 256 pixels.
+    resized_image = ImageOps.fit(
+        oriented_image.convert("RGB"),
+        (256, 256),
+        method=Image.Resampling.LANCZOS,
+    )
 
-    new_img = pil_img.resize(size=(new_width, new_height))
-    new_img.save(NEW_IMAGE, optimize=True, quality=75)
+    resized_image.save(
+        NEW_IMAGE,
+        exif=exif,
+        optimize=True,
+        quality=85,
+    )
 ```
+
+`ImageOps.fit()` preserva a proporção da imagem e recorta o excesso para preencher exatamente o tamanho solicitado. Para apenas limitar as dimensões sem recortar, podemos usar `ImageOps.contain()` ou `thumbnail()`.

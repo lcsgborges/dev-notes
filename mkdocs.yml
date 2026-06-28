@@ -22,40 +22,40 @@ theme:
     - navigation.top
     - content.code.copy
 nav:
-  - Home: index.md
+  - Início: index.md
   - Fundamentos da Computação:
       - Fundamentos de Rede:
-          - Primeiros Passos: fundamentos/redes/introducao.md
-          - Camadas de Rede: fundamentos/redes/camadas.md
+          - Primeiros passos: fundamentos/redes/introducao.md
+          - Camadas de rede: fundamentos/redes/camadas.md
   - Linguagens de Programação:
       - C:
           - Processos e IPC:
               - Introdução: c/processos/introducao.md
-              - Memória de Processo: c/processos/memoria.md
-              - File Descriptors: c/processos/fd.md
-              - Fork: c/processos/fork.md
-              - Signals: c/processos/signals.md
+              - Memória de processo: c/processos/memoria.md
+              - Descritores de arquivo: c/processos/fd.md
+              - Processos com fork: c/processos/fork.md
+              - Sinais: c/processos/signals.md
               - Pipes: c/processos/pipes.md
               - FIFOs: c/processos/fifos.md
           - Arquivos em C: c/arquivos.md
           - OpenMP: c/openmp.md
       - Go:
-          - Primeiros Passos: go/go.md
+          - Primeiros passos: go/go.md
           - Exercícios: go/exercicios_basicos_go.md
       - Java:
-          - Primeiros Passos: java/introducao/introducao.md
-          - Orientação a Objetos:
-              - Orientação a Objetos I: java/orientacao-a-objetos/poo1.md
-          - Estruturas de Dados:
-              - Arrays e Listas: java/estrutura-de-dados/arrays_e_listas.md
+          - Primeiros passos: java/introducao/introducao.md
+          - Orientação a objetos:
+              - Orientação a objetos I: java/orientacao-a-objetos/poo1.md
+          - Estruturas de dados:
+              - Arrays e listas: java/estrutura-de-dados/arrays_e_listas.md
           - Exercícios:
-              - Primeiros Passos: java/introducao/exercicios_basicos.md
-              - Orientação a Objetos I: java/orientacao-a-objetos/exercicios_poo1.md
+              - Primeiros passos: java/introducao/exercicios_basicos.md
+              - Orientação a objetos I: java/orientacao-a-objetos/exercicios_poo1.md
       - Python:
           - Alembic: python/alembic.md
           - Pillow: python/pillow.md
           - SQLAlchemy: python/sqlalchemy.md
-          - Type Hints: python/types-hints-py.md
+          - Anotações de tipo: python/types-hints-py.md
   - DevOps:
       - Docker: devops/docker.md
 markdown_extensions:
@@ -65,7 +65,6 @@ markdown_extensions:
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.snippets
-  - pymdownx.superfences
   - pymdownx.superfences:
       custom_fences:
         - name: mermaid

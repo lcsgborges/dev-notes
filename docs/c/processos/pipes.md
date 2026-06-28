@@ -2,17 +2,17 @@
 
 Um **pipe** é um canal de comunicação que o kernel usa para transportar bytes entre processos.
 
-> Aqui entra um termo novo: IPC (*Inter-Process Communication*), ou seja, comunicação entre processos. O pipe é um tipo de IPC.
+> IPC significa *interprocess communication*, ou comunicação entre processos. Um *pipe* é um mecanismo de IPC.
 
 Um pipe é utilizado para enviar dados entre processos. No shell é muito simples ver isso:
 
 ```bash
-ls | grep *.c
+ls | grep '\.c$'
 ```
 
 Esse `|` é um pipe. O `ls` escreve no pipe e o `grep` lê do pipe.
 
-## Pipe Anônimo
+## *Pipe* anônimo
 
 O pipe mais básico é o **anonymous pipe**. Ele não tem nome no sistema de arquivos e normalmente é usado entre processos relacionados, principalmente entre pai e filho após um `fork()`.
 
@@ -21,23 +21,23 @@ int fd[2];
 pipe(fd);
 ```
 
-Depois disso, temos que:
+Depois disso, passamos a ter:
 
 ```text
 fd[0] -> serve para realizar leitura
 fd[1] -> serve para realizar escrita
 ```
 
-Um detalhe importante é que o **pipe é unidirecional**, se quisermos comunicação nos dois sentidos, usamos dois pipes.
+Um detalhe importante é que o ***pipe* é unidirecional**. Para estabelecer comunicação nos dois sentidos, usamos dois *pipes*.
 
-## Exemplo 01: Mesmo processo escrevendo e lendo
+## Exemplo 1: mesmo processo escrevendo e lendo
 
 ```c
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 
-int main() {
+int main(void) {
     int fd[2];
 
     if (pipe(fd) == -1) {
@@ -45,9 +45,14 @@ int main() {
         return 1;
     }
 
-    const char *msg = "Olá pelo pipe\n";
+    const char *msg = "Olá pelo pipe";
 
-    write(fd[1], msg, strlen(msg));
+    if (write(fd[1], msg, strlen(msg)) == -1) {
+        perror("write");
+        close(fd[0]);
+        close(fd[1]);
+        return 1;
+    }
 
     char buffer[100];
 
@@ -55,28 +60,31 @@ int main() {
 
     if (n == -1) {
         perror("read");
+        close(fd[0]);
+        close(fd[1]);
         return 1;
     }
-    
+
     buffer[n] = '\0';
-    printf("Recebido: %s\n", buffer);
+    printf("Recebido: %s.\n", buffer);
 
     close(fd[0]);
     close(fd[1]);
-    
+
     return 0;
 }
 ```
 
-## Exemplo 02: Pai envia mensagem para o filho
+## Exemplo 2: pai envia uma mensagem ao filho
 
 ```c
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 
-int main() {
+int main(void) {
     int fd[2];
 
     if (pipe(fd) == -1) {
@@ -88,41 +96,50 @@ int main() {
 
     if (pid == -1) {
         perror("fork");
+        close(fd[0]);
+        close(fd[1]);
         return 1;
     }
 
     if (pid == 0) {
-        // filho
+        // O filho somente lê.
         close(fd[1]);
 
         char buffer[100];
-        
+
         ssize_t n = read(fd[0], buffer, sizeof(buffer) - 1);
-        
+
         if (n == -1) {
             perror("read");
             close(fd[0]);
             return 1;
         }
-        
+
         buffer[n] = '\0';
-        
-        printf("Filho recebeu: %s\n", buffer);
-        
-        close(fd[0]);
-        
-        return 0;
-    } else {
-        // pai só escreve
+
+        printf("Filho recebeu: %s", buffer);
+
         close(fd[0]);
 
-        const char *msg = "Mensagem enviada pelo pai";
-        
-        write(fd[1], msg, strlen(msg));
-        
+        return 0;
+    } else {
+        // O pai somente escreve.
+        close(fd[0]);
+
+        const char *msg = "Mensagem enviada pelo pai.\n";
+
+        if (write(fd[1], msg, strlen(msg)) == -1) {
+            perror("write");
+            close(fd[1]);
+            return 1;
+        }
+
         close(fd[1]);
-        
-        wait(NULL);
+
+        if (waitpid(pid, NULL, 0) == -1) {
+            perror("waitpid");
+            return 1;
+        }
     }
     return 0;
 }
@@ -132,15 +149,15 @@ O fluxo é o seguinte:
 
 ```mermaid
     flowchart TD
-    A[Pai cria pipe]
-    B[Pai faz fork]
-    C[Filho herda os file descriptors]
-    D[Pai fecha a porta de leitura]
-    E[Filho fecha a porta de escrita]
+    A[Pai cria o pipe]
+    B[Pai chama fork]
+    C[Filho herda os descritores]
+    D[Pai fecha a extremidade de leitura]
+    E[Filho fecha a extremidade de escrita]
     F[Pai escreve no pipe]
     G[Filho lê do pipe]
-    H[Pai espera filho terminar o processo]
-    I[Processo pai encerra]
+    H[Pai espera o filho terminar]
+    I[Processo pai termina]
     A --> B
     B --> C
     C --> D
@@ -151,7 +168,7 @@ O fluxo é o seguinte:
     H --> I
 ```
 
-## Exemplo 03: Ler até o EOF
+## Exemplo 3: ler até o EOF
 
 Esse é um exemplo mais realista: o pai escreve várias mensagens e fecha o pipe. O filho lê até acabar.
 
@@ -160,8 +177,9 @@ Esse é um exemplo mais realista: o pai escreve várias mensagens e fecha o pipe
 #include <unistd.h>
 #include <string.h>
 #include <sys/wait.h>
+#include <sys/types.h>
 
-int main() {
+int main(void) {
     int fd[2];
 
     if (pipe(fd) == -1) {
@@ -170,9 +188,11 @@ int main() {
     }
 
     pid_t pid = fork();
-    
+
     if (pid == -1) {
         perror("fork");
+        close(fd[0]);
+        close(fd[1]);
         return 1;
     }
 
@@ -183,7 +203,23 @@ int main() {
         ssize_t n;
 
         while ((n = read(fd[0], buffer, sizeof(buffer))) > 0) {
-            write(1, buffer, n);
+            size_t total = 0;
+
+            while (total < (size_t)n) {
+                ssize_t written = write(
+                    STDOUT_FILENO,
+                    buffer + total,
+                    (size_t)n - total
+                );
+
+                if (written == -1) {
+                    perror("write");
+                    close(fd[0]);
+                    return 1;
+                }
+
+                total += (size_t)written;
+            }
         }
 
         if (n == -1) {
@@ -197,40 +233,48 @@ int main() {
     } else {
         close(fd[0]);
 
-        write(fd[1], "Linha 1\n", 8);
-        write(fd[1], "Linha 2\n", 8);
-        write(fd[1], "Linha 3\n", 8);
-        
+        const char *messages = "Linha 1.\nLinha 2.\nLinha 3.\n";
+
+        if (write(fd[1], messages, strlen(messages)) == -1) {
+            perror("write");
+            close(fd[1]);
+            return 1;
+        }
+
         close(fd[1]);
-        wait(NULL);
+
+        if (waitpid(pid, NULL, 0) == -1) {
+            perror("waitpid");
+            return 1;
+        }
     }
     return 0;
 }
 ```
 
-Aqui, o `close(fd[1])` no pai é fundamental, sem ele, o filho poderia ficar travado no `read()` esperando mais dados.
+O `close(fd[1])` no pai é fundamental. Sem ele, ainda existiria uma extremidade de escrita aberta, e o filho ficaria bloqueado em `read()` esperando mais dados.
 
 ## Comportamento do pipe
 
-- Se o pipe está vazio, mas ainda existe algum descritor aberto: **`read()` bloqueia**.
+- Se o *pipe* está vazio, mas ainda existe alguma extremidade de escrita aberta: **`read()` bloqueia**.
 - Se o pipe está vazio e ninguém mais pode escrever: **`read()` retorna 0** (isso significa EOF).
-- Se escrevemos em um pipe sem leitores (`fd[0]` fechado): **processo recebe `SIGPIPE`** e por padrão isso encerra o processo.
+- Se escrevemos em um *pipe* sem leitores: o processo recebe `SIGPIPE`, que, por padrão, encerra o processo. Se o sinal for ignorado ou tratado, `write()` falha com `EPIPE`.
 
 Exemplo:
 
-- `yes` escreve infinatamente y no terminal.
+- `yes` escreve linhas com `y` continuamente.
 - `head` mostra as 10 primeiras linhas apenas.
 
 ```bash
 yes | head
 ```
 
-Depois que o `head` lê as 10 primeiras linha, ele fecha o pipe e o `yes` recebe o `SIGPIPE`, pois continua tentando escrever, mas não há mais leitor no `pipe` e por isso o processo termina.
+Depois que `head` lê as dez primeiras linhas, ele fecha sua extremidade do *pipe*. Quando `yes` tenta escrever novamente, recebe `SIGPIPE` porque não há mais leitores e, por padrão, termina.
 
 ## Pipe como fluxo de bytes
 
 O pipe não preserva "mensagens" do jeito que queremos. Para isso, precisamos criar protocolos, por exemplo:
 
-- Cada mensagem terminar com `\n`
-- Primeiros 4 bytes no envio indicam o tamanho da mensagem
-- Entre outros
+- Fazer cada mensagem terminar com `\n`.
+- Reservar os primeiros quatro bytes para indicar o tamanho da mensagem.
+- Usar um formato de serialização com enquadramento definido.

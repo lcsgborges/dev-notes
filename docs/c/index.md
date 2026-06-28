@@ -1,5 +1,5 @@
 # C
 
-Anotações sobre linguagem C.
+Anotações sobre a linguagem C.
 
-- [OpenMP](openmp.md)
+- [OpenMP](openmp.md).

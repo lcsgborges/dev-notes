@@ -1,3 +1,3 @@
-# Estruturas de Dados em Java
+# Estruturas de dados em Java
 
 ## Arrays

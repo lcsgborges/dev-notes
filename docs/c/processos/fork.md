@@ -1,8 +1,8 @@
-# `fork()`, `wait()`, `exec()` e Ciclo de Vida do Processo
+# `fork()`, `wait()`, família `exec` e ciclo de vida do processo
 
-Um processo pode criar outro processo. E mais, um processo pode ser criado como cópia de outro, depois trocar completamente o programa que está executando. Essa é a base de como o `shell` executa comandos, como servidores criam workers, como pipelines funcionam e como processos pais controlam filhos.
+Um processo pode criar outro como uma cópia de si mesmo e, em seguida, substituir o programa executado pelo novo processo. Esse mecanismo é a base de como o *shell* executa comandos, servidores criam processos de trabalho (*workers*), *pipelines* funcionam e processos pais controlam seus filhos.
 
-Imagina que tenhamos um processo rodando, o `shell` e o `shell` precisa executar outro programa, como por exemplo, o `ls`. Uma possibilidade seria o `shell` simplesmente "virar" o `ls`, mas se o `shell` virasse o `ls`, quando `ls` terminasse, o `shell` teria sumido.
+Imagine que o *shell* precise executar outro programa, como `ls`. Se o próprio processo do *shell* fosse substituído diretamente pelo `ls`, ele deixaria de existir quando o comando terminasse.
 
 O Unix separou a criação de processo em duas operações diferentes:
 
@@ -16,40 +16,40 @@ O Unix separou a criação de processo em duas operações diferentes:
     end
 ```
 
-O Shell faz mais ou menos isso:
+O *shell* faz, de forma simplificada, o seguinte:
 
-1. Shell chama `fork()`
-2. Pai continua sendo Shell
-3. Filho chama `exec("ls")`
+1. O *shell* chama `fork()`.
+2. O processo pai continua executando o *shell*.
+3. O processo filho chama uma função da família `exec` para executar `ls`.
 
-Depois o Pai espera o filho terminar com `wait()`
+Depois, o processo pai espera o filho terminar com `wait()` ou `waitpid()`.
 
 ## Fork
 
 Conceitualmente, `fork()` cria um processo filho a partir do processo pai. O filho nasce muito parecido com o pai:
 
-- Mesmo código
-- Mesmas variáveis no momento do fork
-- Mesmos file descriptors abertos
-- Mesmo diretório atual
-- Mesmas variáveis de ambiente
-- Mesma posição de execução
+- O mesmo código.
+- Cópias das variáveis existentes no momento de `fork()`.
+- Descritores correspondentes aos mesmos arquivos abertos.
+- O mesmo diretório de trabalho atual.
+- Cópias das mesmas variáveis de ambiente.
+- Continuação da execução logo após `fork()`.
 
 Mas são processos diferentes, pois cada um tem:
 
-- PID próprio
-- Memória virtual própria
-- Estado próprio
-- Execução própria
+- PID próprio.
+- Espaço de memória virtual próprio.
+- Estado próprio.
+- Fluxo de execução próprio.
 
-O `fork()` retorna duas vezes. Para o pai, `fork()` retorna o PID do filho. Para o filho, `fork()` retorna 0. Se der erro, retorna -1.
+Quando `fork()` é bem-sucedida, pai e filho continuam a partir da instrução seguinte. No pai, a função retorna o PID do filho; no filho, retorna `0`. Em caso de erro, somente o processo pai continua, e a função retorna `-1`.
 
 ```c
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
 
-int main() {
+int main(void) {
     pid_t pid = fork();
 
     if (pid == -1) {
@@ -58,47 +58,57 @@ int main() {
     }
 
     if (pid == 0) {
-        printf("Sou o processo filho. Meu PID é %d. Meu pai tem PID %d\n", getpid(), getppid());
+        printf(
+            "Sou o processo filho. Meu PID é %ld e o PID do meu pai é %ld.\n",
+            (long)getpid(),
+            (long)getppid()
+        );
     } else {
-        printf("Sou o pai. Meu PID é %d\n. Criei o filho com PID %d\n", getpid(), pid);
+        printf(
+            "Sou o processo pai. Meu PID é %ld e criei o filho %ld.\n",
+            (long)getpid(),
+            (long)pid
+        );
     }
-    
+
     return 0;
 }
 ```
 
-A ordem de impressão pode mudar, pois depois do `fork()`, pai e filho são processos diferentes e independentes. O scheduler do kernel decide quem roda primeiro.
+A ordem das mensagens pode mudar, pois, depois de `fork()`, pai e filho são processos diferentes. O escalonador do kernel decide qual deles executará primeiro.
 
 ## Exec
 
-O `exec()` troca o programa que está rodando dentro do processo atual. Ele não cria outro processo, ele substitui a imagem de memória do processo atual, por exemplo:
+As funções da família `exec` substituem o programa executado pelo processo atual. Elas não criam outro processo; em caso de sucesso, o PID é preservado e a imagem do programa é substituída. Descritores sem a opção `FD_CLOEXEC` permanecem abertos.
 
 Antes:
 
 ```text
-text  -> código do programa ani
-data  -> variáveis globais do programa antigo 
-heap  -> mallocs do programa antigo
-stack -> chamadas do programa antigo
+text  -> código do programa antigo
+data  -> variáveis globais do programa antigo
+heap  -> alocações do programa antigo
+stack -> pilha do programa antigo
 ```
 
 Depois do `exec()`:
 
 ```text
 text  -> código do novo programa
-data  -> globais do novo programa
+data  -> variáveis globais do novo programa
 heap  -> novo heap
-stack -> nova stack inicial
+stack -> nova pilha inicial
 ```
 
-É importante saber que o `exec()` não retorna em caso de sucesso, porque se `exec()` deu certo, o programa antigo foi substituído. A linha depois do `exec()` só executa se houver erro.
+É importante saber que uma função da família `exec` não retorna em caso de sucesso, pois o programa anterior foi substituído. A instrução seguinte somente é executada se ocorrer um erro.
 
 ```c
 #include <stdio.h>
 #include <unistd.h>
 
-int main() {
-    printf("Antes do exec\n");
+int main(void) {
+    printf("Antes de execlp().\n");
+    fflush(stdout);
+
     execlp("ls", "ls", "-l", NULL);
     perror("execlp");
     return 1;
@@ -109,20 +119,20 @@ int main() {
 
 Quando um processo filho termina, o pai precisa coletar seu resultado. O `wait()` serve para:
 
-- Esperar um filho terminar
-- Coletar seu status de saída
-- Remover o processo zumbi da tabela do kernel
+- Esperar um filho terminar.
+- Coletar seu status de saída.
+- Remover a entrada do processo zumbi da tabela mantida pelo kernel.
 
 ```c
 int status;
 pid_t filho = wait(&status);
 ```
 
-### Processo Zumbi
+### Processo zumbi
 
-Um processo zumbi não está mais executando, ele não consome CPU, a memória principal dele já foi liberada, mas ainda existe uma entrada mínima na tabela de processos, contendo informações de término.
+Um processo zumbi não está mais em execução e não consome tempo de CPU. Seus principais recursos já foram liberados, mas uma entrada mínima, com informações sobre o término, permanece na tabela de processos.
 
-Se o pai nunca chamar `wait()`, o zumbi fica lá.
+Essa entrada permanece até que o pai colete o estado do filho ou termine; nesse último caso, outro processo do sistema adota e coleta o filho.
 
 Corrigindo o código:
 
@@ -132,7 +142,7 @@ Corrigindo o código:
 #include <sys/wait.h>
 #include <sys/types.h>
 
-int main() {
+int main(void) {
     pid_t pid = fork();
 
     if (pid == -1) {
@@ -141,17 +151,22 @@ int main() {
     }
 
     if (pid == 0) {
-        printf("Filho terminando. PID = %d\n", getpid());
+        printf("Filho %ld terminando.\n", (long)getpid());
         return 0;
     } else {
         int status;
-        wait(&status);
+
+        if (waitpid(pid, &status, 0) == -1) {
+            perror("waitpid");
+            return 1;
+        }
+
         printf("Pai coletou o filho.\n");
     }
     return 0;
 }
 ```
 
-Agora o filho não fica zumbi.
+Agora a entrada do filho é coletada, e ele não permanece como zumbi.
 
 Usando `waitpid()`, conseguimos escolher qual filho esperar.

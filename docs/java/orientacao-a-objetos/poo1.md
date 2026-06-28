@@ -1,14 +1,14 @@
-# Java - Orientação a Objetos
+# Java — orientação a objetos
 
 Uma classe é uma representação ou um molde de algo. Ela pode conter atributos, que representam características e propriedades, e métodos, que definem comportamentos.
 
 Exemplos comuns de classe em Java:
 
-- **Entidades**: `Product`, `Client`, `Triangle`
-- **Serviços**: `ProductService`, `ClientService`, `EmailService`
-- **Controladores**: `ProductController`, `ClientController`
-- **Utilitários**: `Calculator`
-- **Repositórios**: `ProductRepository`, `ClientRepository`
+- **Entidades**: `Product`, `Client` e `Triangle`.
+- **Serviços**: `ProductService`, `ClientService` e `EmailService`.
+- **Controladores**: `ProductController` e `ClientController`.
+- **Utilitários**: `Calculator`.
+- **Repositórios**: `ProductRepository` e `ClientRepository`.
 
 Além disso, podemos agrupar as classes dentro de pacotes (`packages`). Exemplo: `users`, com `controllers`, `services` e `repositories`.
 
@@ -16,10 +16,10 @@ Além disso, podemos agrupar as classes dentro de pacotes (`packages`). Exemplo:
 
 Os atributos e métodos possuem os seguintes modificadores de acesso:
 
-- **private**: elementos só podem ser acessados dentro da própria classe onde foram declarados
-- **default (package-private)**: aplicado automaticamente quando nenhum modificador é declarado. O elemento fica visível apenas para classes pertencentes ao mesmo pacote
-- **protected**: permite o acesso dentro do próprio pacote e também por classes filhas (subclasses) que estejam em outros pacotes
-- **public**: sem restrições. Pode ser acessado de qualquer lugar, por qualquer classe e em qualquer pacote
+- **`private`**: permite acesso somente dentro da classe que declarou o elemento.
+- **Acesso de pacote** (*package-private*): ocorre quando nenhum modificador é declarado e permite acesso por código do mesmo pacote.
+- **`protected`**: permite acesso no mesmo pacote e, sob as regras de herança, por subclasses em outros pacotes.
+- **`public`**: permite acesso por outros tipos, respeitando também os limites definidos pelo sistema de módulos.
 
 ## Membros estáticos
 
@@ -31,14 +31,14 @@ Exemplo de uso:
 double n = Math.sqrt(64.0);
 ```
 
-## Classe Object
+## Classe `Object`
 
 Toda classe em Java herda de `Object`. Entre seus métodos estão:
 
-- `getClass()`: retorna o tipo do objeto
-- `equals()`: compara se o objeto é igual a outro
-- `hashCode()`: retorna um código hash do objeto
-- `toString()`: converte o objeto em uma representação textual
+- `getClass()`: retorna o objeto `Class` que representa a classe de execução.
+- `equals()`: testa igualdade; a implementação de `Object` compara as referências.
+- `hashCode()`: retorna um código *hash* compatível com o contrato de `equals()`.
+- `toString()`: retorna uma representação textual do objeto.
 
 Dessa forma, podemos sobrescrever `toString()` em nossa classe para representar seus objetos da maneira mais adequada.
 
@@ -47,7 +47,6 @@ Dessa forma, podemos sobrescrever `toString()` em nossa classe para representar 
 Quando criamos classes, é comum usarmos construtores, que são responsáveis por inicializar um objeto com os valores informados. Por exemplo:
 
 ```java
-
 public class Person {
     private String name;
     private int age;
@@ -67,7 +66,7 @@ Person person = new Person("João", 30);
 
 O operador `new` indica que estamos criando um novo objeto em Java.
 
-> Em geral, os objetos são alocados na heap, e a variável armazena uma referência ao objeto.
+> Conceitualmente, os objetos são alocados no *heap*, e a variável armazena uma referência. A JVM pode aplicar otimizações que alteram a alocação física.
 
 ### Palavra `this`
 
@@ -78,7 +77,7 @@ Usamos a palavra `this` para nos referirmos ao próprio objeto dentro da classe,
 A sobrecarga em Java permite declarar métodos com o mesmo nome e diferentes listas de parâmetros. Esse recurso é muito usado em construtores:
 
 ```java
-public class Product {
+class Product {
     private String name;
     private double price;
     private int quantity;
@@ -107,11 +106,11 @@ No caso acima, estamos criando dois objetos `Product` usando duas versões sobre
 
 ## Encapsulamento
 
-Encapsulamento consiste em proteger os dados internos da classe. Ocultamos os detalhes de implementação e restringimos o acesso direto aos atributos, permitindo que sejam acessados e modificados de outras formas.
+Encapsulamento consiste em ocultar detalhes internos e controlar as operações permitidas sobre o estado de um objeto. Isso não exige expor um método de leitura ou escrita para cada atributo.
 
-### Getters e Setters
+### *Getters* e *setters*
 
-Para acessar ou modificar um atributo, geralmente utilizamos `getters` e `setters`:
+Quando a interface da classe exige leitura ou alteração de um atributo, podemos fornecer *getters* e *setters*. Esses métodos também podem validar os novos valores:
 
 ```java
 public class Product {
@@ -145,6 +144,6 @@ Agora, para acessar ou modificar um atributo, podemos usar:
 
 ```java
 Product p = new Product("TV", 2000);
-System.out.print(p.getName());
+System.out.println(p.getName());
 p.setPrice(2200);
 ```

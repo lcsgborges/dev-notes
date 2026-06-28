@@ -1,6 +1,6 @@
 # Go
 
-Anotações e exercícios sobre Go.
+Anotações e exercícios sobre a linguagem Go.
 
-- [Primeiros Passos](go.md)
-- [Exercícios Básicos](exercicios_basicos_go.md)
+- [Primeiros passos](go.md).
+- [Exercícios básicos](exercicios_basicos_go.md).

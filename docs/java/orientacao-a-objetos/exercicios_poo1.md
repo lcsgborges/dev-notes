@@ -1,20 +1,20 @@
-# Lista de Exercícios - Java POO
+# Lista de exercícios — orientação a objetos em Java
 
 ## Objetivo
 
-Esta lista reúne exercícios somente sobre Programação Orientada a Objetos em Java:
+Esta lista reúne exercícios sobre programação orientada a objetos em Java:
 
-- Classes e objetos
-- Atributos e métodos
-- Construtores
-- Palavra `this`
-- Sobrecarga
-- Encapsulamento
-- Modificadores de acesso
-- Método `toString()`
-- Membros estáticos
-- Tipos por valor e tipos por referência
-- Objetos relacionados por composição simples
+- Classes e objetos.
+- Atributos e métodos.
+- Construtores.
+- Palavra-chave `this`.
+- Sobrecarga.
+- Encapsulamento.
+- Modificadores de acesso.
+- Método `toString()`.
+- Membros estáticos.
+- Valores primitivos e referências a objetos.
+- Objetos relacionados por composição simples.
 
 ## Regras gerais
 
@@ -22,7 +22,7 @@ Esta lista reúne exercícios somente sobre Programação Orientada a Objetos em
 - Não use listas.
 - Não use matrizes.
 - Não use `ArrayList`, `List`, `Map`, `Set` ou qualquer outra coleção.
-- Não use `for each`.
+- Não use o laço *enhanced for*.
 - Quando precisar testar mais de um objeto, crie variáveis separadas, como `produto1`, `produto2`, `conta1` e `conta2`.
 
 ---
@@ -41,7 +41,7 @@ Crie um construtor que receba os três lados do triângulo.
 
 Crie os métodos:
 
-```java
+```text
 double area()
 ```
 
@@ -51,6 +51,8 @@ No método `area()`, use a fórmula de Heron:
 p = (a + b + c) / 2
 area = raizQuadrada(p * (p - a) * (p - b) * (p - c))
 ```
+
+Valide se os lados são positivos e satisfazem a desigualdade triangular antes de calcular a área.
 
 No `main`, crie dois triângulos usando variáveis separadas, calcule a área de cada um e mostre qual possui a maior área.
 
@@ -70,7 +72,7 @@ Crie um construtor que receba todos os dados do produto.
 
 Crie métodos para:
 
-```java
+```text
 double valorTotalEmEstoque()
 void adicionarProdutos(int quantidade)
 void removerProdutos(int quantidade)
@@ -79,7 +81,7 @@ void removerProdutos(int quantidade)
 Regras:
 
 - Não permita preço menor ou igual a zero.
-- Não permita quantidade negativa.
+- Não permita quantidade inicial negativa nem operações com quantidade negativa.
 - Não permita remover mais produtos do que existem em estoque.
 
 No `main`, crie um produto, adicione unidades, remova unidades e mostre o valor total em estoque.
@@ -114,9 +116,11 @@ private double altura;
 
 Crie um construtor que receba todos os dados da pessoa.
 
+Valide para que a idade não seja negativa e a altura seja maior que zero.
+
 Crie os métodos:
 
-```java
+```text
 String getNome()
 int getIdade()
 double getAltura()
@@ -141,14 +145,14 @@ private double nota3;
 
 Crie dois construtores:
 
-```java
+```text
 Aluno(String nome)
 Aluno(String nome, double nota1, double nota2, double nota3)
 ```
 
 Crie também os métodos:
 
-```java
+```text
 double media()
 boolean aprovado()
 ```
@@ -184,7 +188,7 @@ public Carro(String modelo, String marca, int ano) {
 
 Crie também o método:
 
-```java
+```text
 void atualizarAno(int ano)
 ```
 
@@ -207,9 +211,11 @@ private double salario;
 
 Crie um construtor que receba `nome` e `salario`.
 
+Não permita um salário inicial negativo.
+
 Crie os métodos:
 
-```java
+```text
 String getNome()
 void setNome(String nome)
 double getSalario()
@@ -238,14 +244,14 @@ private double saldo;
 
 Crie dois construtores:
 
-```java
+```text
 ContaBancaria(int numero, String titular)
 ContaBancaria(int numero, String titular, double depositoInicial)
 ```
 
 Crie métodos:
 
-```java
+```text
 void depositar(double valor)
 void sacar(double valor)
 double getSaldo()
@@ -256,9 +262,11 @@ Regras:
 - O saldo não pode ser alterado diretamente.
 - O saque deve cobrar uma taxa de `R$ 5,00`.
 - Não permita depósito menor ou igual a zero.
-- Não permita saque se o saldo for insuficiente.
+- Não permita saque se o saldo for insuficiente para cobrir o valor solicitado e a taxa.
 
 No `main`, crie uma conta, faça um depósito, faça um saque e mostre o saldo final.
+
+> Para simplificar o exercício, os valores usam `double`. Sistemas financeiros reais devem usar uma representação decimal apropriada, como `BigDecimal`, com regras explícitas de arredondamento.
 
 ---
 
@@ -276,7 +284,7 @@ Crie um construtor que receba todos os dados.
 
 Crie os métodos:
 
-```java
+```text
 String getTitulo()
 String getAutor()
 int getPaginas()
@@ -301,7 +309,7 @@ Observe o erro e corrija usando os métodos públicos.
 
 ---
 
-## 10. Tipos por valor e tipos por referência
+## 10. Valores primitivos e referências a objetos
 
 Crie um programa com duas partes.
 
@@ -325,7 +333,7 @@ produto2.adicionarProdutos(3);
 
 Mostre os dados de `produto1` e `produto2`.
 
-Explique em um comentário no código por que os dois produtos ficaram com o mesmo estoque.
+Explique em um comentário por que `produto1` e `produto2` contêm cópias da mesma referência e, portanto, apontam para o mesmo objeto. Java sempre passa e atribui argumentos por valor; nesse caso, o valor copiado é uma referência.
 
 ---
 
@@ -339,7 +347,7 @@ public static final double IOF = 0.06;
 
 Crie o método estático:
 
-```java
+```text
 public static double dolarParaReal(double cotacaoDolar, double quantidadeDolar)
 ```
 
@@ -348,6 +356,8 @@ Regra:
 - O valor final deve incluir `6%` de IOF.
 
 No `main`, leia a cotação do dólar, leia a quantidade de dólares e mostre o valor em reais.
+
+> Assim como no exercício bancário, `double` é usado apenas para fins didáticos. Valores monetários reais exigem uma representação decimal e regras de arredondamento.
 
 ---
 
@@ -373,7 +383,7 @@ Crie construtores para as duas classes.
 
 Na classe `Cliente`, crie o método:
 
-```java
+```text
 void alterarEndereco(Endereco endereco)
 ```
 

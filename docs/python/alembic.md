@@ -1,9 +1,9 @@
 # Alembic
 
-- Pode trabalhar em toda a camada de DDL (Data Definition Language)
-- Fornece scripts de migração de schemas para upgrades e downgrades
-- Suporte à geração de SQL (offline)
-- API minimalista
+- Permite criar e executar operações DDL (*Data Definition Language*).
+- Mantém scripts versionados para aplicar e reverter alterações de esquema.
+- Pode gerar SQL sem executar a migração no banco de dados, no modo *offline*.
+- Integra-se aos metadados do SQLAlchemy para sugerir migrações.
 
 ## Instalação
 
@@ -14,7 +14,8 @@ pip install alembic
 ## Inicializando o Alembic
 
 ```bash
-alembic init <nome> # por padrão migrations: alembic init migrations
+# Cria a estrutura no diretório migrations.
+alembic init migrations
 ```
 
 ## Configurações gerais
@@ -27,18 +28,18 @@ O arquivo `env.py` contém a configuração do ambiente usado para gerar e execu
 
 ```bash
 alembic revision -m "mensagem de migração"
-# A mensagem identificará o arquivo de migração, como em um commit
+# A mensagem ajuda a identificar a migração no histórico.
 ```
 
-No arquivo gerado para a migração, teremos duas funções principais que são "inversas": `upgrade()` e `downgrade()`.
+O arquivo gerado possui duas funções principais: `upgrade()`, que aplica a alteração, e `downgrade()`, que deve revertê-la quando a reversão for suportada.
 
 ### API de operações
 
 A API de operações funciona para os comandos DDL:
 
-- Criação de tabelas (`CREATE TABLE`)
-- Alteração de tabelas (`ALTER TABLE`)
-- Exclusão de tabelas (`DROP TABLE`)
+- Criação de tabelas (`CREATE TABLE`).
+- Alteração de tabelas (`ALTER TABLE`).
+- Exclusão de tabelas (`DROP TABLE`).
 
 Essas operações serão feitas dentro das funções `upgrade()` e `downgrade()`.
 
@@ -60,8 +61,11 @@ from api.settings import get_settings
 settings = get_settings()
 
 config = context.config
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+database_url = str(settings.DATABASE_URL).replace("%", "%%")
+config.set_main_option("sqlalchemy.url", database_url)
 ```
+
+O escape de `%` evita que uma URL com esse caractere seja interpretada pela interpolação usada na configuração. Credenciais não devem ser gravadas diretamente em arquivos versionados.
 
 Para aplicar as migrações no banco de dados, basta usarmos o seguinte comando:
 
@@ -81,7 +85,8 @@ O Alembic permite consultar o histórico e avançar ou retroceder entre as migra
 
 ```bash
 alembic history
-alembic history --indicate-current # ou só -i (mostra onde estou)
+alembic current
+alembic history --verbose
 
 alembic upgrade <ID>
 alembic upgrade head
@@ -92,20 +97,20 @@ alembic downgrade base
 alembic downgrade -1
 ```
 
-## SQLA CodeGen
+## `sqlacodegen`
 
 Um cenário comum é termos um banco existente ou um projeto que começou sem modelos versionados. Nesse caso, podemos fazer a reflexão (_reflection_) do banco de dados para gerar código.
 
-- Instalação: `pip install sqlacodegen`
+Instalação: `pip install sqlacodegen`.
 
 Usando a URI do banco, o gerador construirá os modelos com o SQLAlchemy ORM:
 
 ```bash
-# sqlacodegen <DB_URI>
+# Substitua DATABASE_URL pela URL de conexão.
 sqlacodegen sqlite:///database.db
 ```
 
-## Migrações automáticas
+## Autogeração de migrações
 
 No arquivo `env.py`, precisamos atribuir `Base.metadata` a `target_metadata`:
 
@@ -124,30 +129,32 @@ from modules.posts.models import Post
 
 target_metadata = Base.metadata
 
-# Podemos criar um arquivo que reúna todos os modelos e importá-los de uma
-# só vez. Exemplo: registry.py com todos os imports dos modelos.
+# Um módulo de registro pode reunir essas importações.
 ```
 
-Agora, podemos gerar uma migração automática com o Alembic:
+Agora, podemos pedir que o Alembic compare os metadados com o banco e gere uma migração candidata:
 
 ```bash
 alembic revision --autogenerate -m "tabelas users e posts"
 ```
 
+A autogeração não detecta todas as alterações nem garante que a operação sugerida seja segura. O arquivo gerado deve ser revisado antes da aplicação.
+
 ## Alguns problemas que podemos ter
 
 ### Sem acesso ao banco de produção
 
-Por questões de segurança, às vezes não podemos aplicar uma migração no banco de produção. Nesse caso, podemos usar o modo offline para gerar o código SQL:
+Quando não podemos aplicar uma migração diretamente no banco de produção, usamos o modo *offline* para gerar o SQL. Como esse modo não consulta o banco, devemos informar explicitamente o intervalo de revisões:
 
 ```bash
-alembic upgrade +1 --sql
+alembic upgrade REVISAO_ATUAL:REVISAO_DESTINO --sql
 ```
 
 Para downgrades no modo offline, precisamos informar o **ID** da versão atual e o da versão para a qual queremos voltar:
 
 ```bash
-alembic downgrade <id_current>:<id_past> --sql
-# Também podemos usar downgrade head:-1. Exemplo:
-# alembic downgrade head:-1 --sql
+alembic downgrade REVISAO_ATUAL:REVISAO_ANTERIOR --sql
+
+# Para gerar a reversão de uma revisão a partir de head:
+alembic downgrade head:-1 --sql
 ```

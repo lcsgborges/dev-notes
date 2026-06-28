@@ -1,6 +1,6 @@
 # Java
 
-Anotações sobre linguagem Java.
+Anotações sobre a linguagem Java.
 
-- [Primeiros Passos](introducao/introducao.md)
-- [Orientação a Objetos](orientacao-a-objetos/poo1.md)
+- [Primeiros passos](introducao/introducao.md).
+- [Orientação a objetos](orientacao-a-objetos/poo1.md).

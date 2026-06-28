@@ -12,16 +12,16 @@ A ideia deste material é servir como uma base pessoal de consulta e aprendizado
 
 Aqui serão organizadas anotações sobre temas como:
 
-* Linguagens de programação
-* Bibliotecas e frameworks
-* Banco de dados
-* DevOps
-* Git e GitHub
-* APIs
-* Boas práticas
-* Comandos úteis
-* Exemplos de código
-* Soluções para problemas comuns
+- Linguagens de programação.
+- Bibliotecas e *frameworks*.
+- Bancos de dados.
+- DevOps.
+- Git e GitHub.
+- APIs.
+- Boas práticas.
+- Comandos úteis.
+- Exemplos de código.
+- Soluções para problemas comuns.
 
 ## Organização
 

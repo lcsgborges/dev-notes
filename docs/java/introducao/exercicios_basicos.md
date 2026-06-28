@@ -1,4 +1,4 @@
-# Lista de Exercícios Java — Primeiros Passos
+# Lista de exercícios Java — primeiros passos
 
 ## Exercício 1 — Cadastro simples de usuário
 
@@ -11,7 +11,7 @@ Crie um programa que leia:
 
 Depois, exiba uma mensagem formatada no seguinte modelo:
 
-```java
+```text
 Olá, João!
 Você tem 25 anos, mora em Brasília e trabalha como programador.
 ```
@@ -26,7 +26,7 @@ Você tem 25 anos, mora em Brasília e trabalha como programador.
 
 ```java
 public static void exibirCadastro(String nome, int idade, String cidade, String profissao) {
-    // sua lógica aqui
+    // Sua lógica aqui.
 }
 ```
 
@@ -38,7 +38,7 @@ Crie um programa que leia uma temperatura em Celsius e converta para Fahrenheit.
 
 Fórmula:
 
-```java
+```text
 fahrenheit = (celsius * 9 / 5) + 32
 ```
 
@@ -50,7 +50,7 @@ fahrenheit = (celsius * 9 / 5) + 32
 
 ### Exemplo
 
-```java
+```text
 Digite a temperatura em Celsius: 30
 30.0°C equivalem a 86.0°F
 ```
@@ -77,7 +77,7 @@ O programa deve informar:
 
 ```java
 public static String classificarIdade(int idade) {
-    // sua lógica aqui
+    // Sua lógica aqui.
 }
 ```
 
@@ -85,7 +85,7 @@ public static String classificarIdade(int idade) {
 
 ## Exercício 4 — Sistema de notas
 
-Crie um programa que leia 3 notas de um aluno e calcule a média.
+Crie um programa que leia três notas de um aluno e calcule a média.
 
 Depois, informe a situação do aluno:
 
@@ -102,7 +102,7 @@ Depois, informe a situação do aluno:
 
 ### Exemplo
 
-```java
+```text
 Média: 6.5
 Situação: Recuperação
 ```
@@ -146,13 +146,14 @@ O programa deve informar se a palavra-chave aparece dentro da frase.
 
 ### Requisitos
 
-- Use `toLowerCase()` para evitar problema com maiúsculas e minúsculas.
+- Use `toLowerCase(Locale.ROOT)` nas duas entradas para evitar diferenças de capitalização dependentes da configuração regional.
+- Importe `java.util.Locale`.
 - Use `contains()`.
 - Crie uma função chamada `contemPalavra`.
 
 ### Exemplo
 
-```java
+```text
 Digite uma frase: Java é uma linguagem poderosa
 Digite a palavra-chave: java
 A palavra foi encontrada.
@@ -162,7 +163,7 @@ A palavra foi encontrada.
 
 ```java
 public static boolean contemPalavra(String frase, String palavra) {
-    // sua lógica aqui
+    // Sua lógica aqui.
 }
 ```
 
@@ -179,7 +180,7 @@ O usuário deve digitar:
 
 Considere que o login correto seja:
 
-```java
+```text
 email: admin@email.com
 senha: 123456
 ```
@@ -193,7 +194,7 @@ senha: 123456
 
 ### Exemplo
 
-```java
+```text
 Digite seu e-mail: ADMIN@EMAIL.COM
 Digite sua senha: 123456
 Login realizado com sucesso.
@@ -215,7 +216,7 @@ Depois, exiba todos os números de 1 até o número informado.
 
 ### Exemplo
 
-```java
+```text
 Digite um número: 5
 
 1
@@ -240,7 +241,7 @@ Crie um programa que leia um número inteiro e exiba a tabuada desse número de 
 
 ### Exemplo
 
-```java
+```text
 Digite um número: 7
 
 7 x 1 = 7
@@ -258,7 +259,7 @@ Crie um programa com um menu repetitivo para manipular uma frase digitada pelo u
 
 O programa deve mostrar o seguinte menu:
 
-```java
+```text
 1 - Mostrar frase em maiúsculas
 2 - Mostrar frase em minúsculas
 3 - Mostrar quantidade de caracteres
@@ -269,7 +270,7 @@ O programa deve mostrar o seguinte menu:
 
 ### Requisitos
 
-- Use `while` ou `do while`.
+- Use `while` ou `do-while`.
 - Use `switch`.
 - Use métodos de `String`, como:
 
@@ -294,7 +295,9 @@ public static String deixarMinusculo(String texto) {
 }
 
 public static boolean verificarPalavra(String texto, String palavra) {
-    return texto.toLowerCase().contains(palavra.toLowerCase());
+    String textoNormalizado = texto.toLowerCase(Locale.ROOT);
+    String palavraNormalizada = palavra.toLowerCase(Locale.ROOT);
+    return textoNormalizado.contains(palavraNormalizada);
 }
 ```
 
@@ -308,26 +311,26 @@ Permita que o usuário continue usando o menu até escolher a opção `0`.
 
 Use esta lista para conferir se você praticou os principais pontos.
 
-- [ ] Variáveis e tipos básicos
-- [ ] Entrada de dados com `Scanner`
-- [ ] Saída de dados com `System.out.println`
-- [ ] Operadores aritméticos
-- [ ] Estrutura `if`, `else if` e `else`
-- [ ] Estrutura `switch`
-- [ ] Laço `for`
-- [ ] Laço `while`
-- [ ] Laço `do while`
-- [ ] Métodos/funções `static`
-- [ ] Parâmetros e retorno de funções
-- [ ] Manipulação de `String`
-- [ ] Uso de `toLowerCase()`
-- [ ] Uso de `toUpperCase()`
-- [ ] Uso de `trim()`
-- [ ] Uso de `length()`
-- [ ] Uso de `contains()`
-- [ ] Uso de `equals()`
-- [ ] Uso de `equalsIgnoreCase()`
-- [ ] Uso de `replace()`
+- [ ] Variáveis e tipos básicos.
+- [ ] Entrada de dados com `Scanner`.
+- [ ] Saída de dados com `System.out.println()`.
+- [ ] Operadores aritméticos.
+- [ ] Estruturas `if`, `else if` e `else`.
+- [ ] Estrutura `switch`.
+- [ ] Laço `for`.
+- [ ] Laço `while`.
+- [ ] Laço `do-while`.
+- [ ] Métodos `static`.
+- [ ] Parâmetros e retornos de métodos.
+- [ ] Manipulação de `String`.
+- [ ] Uso de `toLowerCase()`.
+- [ ] Uso de `toUpperCase()`.
+- [ ] Uso de `trim()`.
+- [ ] Uso de `length()`.
+- [ ] Uso de `contains()`.
+- [ ] Uso de `equals()`.
+- [ ] Uso de `equalsIgnoreCase()`.
+- [ ] Uso de `replace()`.
 
 ---
 
@@ -335,7 +338,7 @@ Use esta lista para conferir se você praticou os principais pontos.
 
 Depois de resolver os 10 exercícios, tente criar um único programa com menu principal:
 
-```java
+```text
 1 - Cadastro simples
 2 - Conversor de temperatura
 3 - Verificador de maioridade

@@ -2,27 +2,27 @@
 
 ## Resumo
 
-Docker é uma plataforma para **desenvolver, distribuir e executar aplicações** usando containers. Na prática, ele empacota uma aplicação e suas dependências em uma unidade padronizada, executável em um ambiente "fracamente isolado" chamado `container`, com uma arquitetura cliente-servidor em que a **CLI** conversa com o **daemon** `dockerd` por uma API REST sobre um socket Unix ou uma rede.
+Docker é uma plataforma para **desenvolver, distribuir e executar aplicações** usando contêineres. Na prática, ele empacota uma aplicação e suas dependências em uma unidade padronizada, executável em um ambiente isolado chamado **contêiner**. Sua arquitetura é cliente-servidor: a CLI conversa com o *daemon* `dockerd` pela API do Docker, normalmente por um *socket* Unix ou por uma interface de rede.
 
-O container **NÃO** é uma VM. Containers isolam **processos** no mesmo kernel do host. Já as VMs virtualizam uma máquina inteira, com **hipervisor** e **sistema operacional guest**. Por isso, containers tendem a ser menores, mais rápidos de iniciar e mais densos. Em contrapartida, seu isolamento depende das primitivas do kernel Linux, principalmente **namespaces, cgroups, capabilities, seccomp** e mecanismos de filesystem como **chroot/pivot_root**.
+Um contêiner **não é uma máquina virtual**. Contêineres Linux isolam processos que compartilham o kernel do sistema Linux em que são executados, inclusive quando esse sistema está dentro de uma VM, como pode ocorrer no Docker Desktop. Já as VMs virtualizam uma máquina, com **hipervisor** e **sistema operacional convidado**. Por isso, contêineres tendem a ser menores e mais rápidos de iniciar. Em contrapartida, seu isolamento depende de recursos do kernel, principalmente ***namespaces*, *cgroups*, *capabilities* e *seccomp***, além de mecanismos como `chroot()` e `pivot_root()`.
 
-Na arquitetura do Docker, o `daemon` gerencia **imagens, containers, redes e volumes**; os `registries` armazenam imagens; as imagens são compostas por camadas e metadados; e a execução real do container passa pelo **containerd** e por um runtime OCI, cujo padrão é o `runc`, para então configurar namespaces, cgroups e outros controles no kernel.
+Na arquitetura do Docker, o *daemon* gerencia **imagens, contêineres, redes e volumes**; os *registries* armazenam imagens; e as imagens são compostas por camadas e metadados. A execução de um contêiner passa pelo **containerd** e por um *runtime* OCI, normalmente o `runc`, que participa da configuração de *namespaces*, *cgroups* e outros controles do kernel.
 
-## Primitivas do Kernel
+## Recursos do kernel
 
 |  Primitiva | O que faz | Relação com o Docker |
 | :--- | :---: | ---: |
-| Namespaces | Encapsulam recursos globais do sistema para que processos vejam instâncias isoladas desses recursos | São a base do isolamento de processos, mounts, rede, hostnames e afins |
-| PID namespaces | Isolam os espaços de IDs de processo | Permitem que um processo seja PID 1 dentro do container e tenha árvore de processos própria |
-| Mount namespaces | Isolam a lista de mounts visível para um processo | Permitem construir uma hierarquia de filesystem própria para o container |
-| Network namespaces | Isolam interfaces, pilhas IPv4/IPv6, rotas, firewall e portas | Fazem cada container ter sua própria pilha de rede |
-| Cgroups | Organizam processos em grupos hierárquicos e limitam/monitoram recursos | São a base de limites de CPU, memória e I/O e da observabilidade de consumo |
+| *Namespaces* | Encapsulam recursos globais para que os processos vejam instâncias isoladas | São a base do isolamento de processos, pontos de montagem, rede, nomes de host e outros recursos |
+| *PID namespaces* | Isolam os espaços de identificadores de processos | Permitem que um processo tenha PID 1 dentro do contêiner e veja uma árvore de processos própria |
+| *Mount namespaces* | Isolam a lista de pontos de montagem visível para um processo | Permitem construir uma hierarquia de sistema de arquivos própria para o contêiner |
+| *Network namespaces* | Isolam interfaces, pilhas IPv4 e IPv6, rotas, regras de *firewall* e portas | Permitem que cada contêiner tenha sua própria pilha de rede |
+| *Cgroups* | Organizam processos em grupos hierárquicos e controlam recursos | Permitem contabilizar e limitar recursos como CPU, memória e I/O |
 
-O `chroot()` apenas troca o diretório-raiz aparente do processo, **mount namespaces** definem a árvore de mounts que aquele processo vê e **cgroups** não isolam dados nem processos, mas controlam e medem recursos. O runtime monta o root filesystem, faz o processo entrar em novos namespaces e o coloca nos cgroups apropriados.
+`chroot()` apenas troca o diretório-raiz aparente do processo. Os ***mount namespaces*** definem a árvore de pontos de montagem visível, enquanto os ***cgroups*** contabilizam e controlam recursos, mas não isolam os dados ou os identificadores dos processos. O *runtime* monta o sistema de arquivos raiz, associa o processo aos *namespaces* e o coloca nos *cgroups* apropriados.
 
 ## Arquitetura do Docker
 
-A arquitetura do Docker é **cliente-servidor**. O cliente `docker` envia comandos ao **daemon** `dockerd`, que faz o trabalho pesado de construir imagens, iniciar containers, gerenciar volumes e redes e interagir com os registries. O cliente e o daemon podem rodar no mesmo host ou em hosts separados e conversam pela **Docker API** por meio de um socket Unix ou de uma interface de rede.
+A arquitetura do Docker é **cliente-servidor**. O cliente `docker` envia comandos ao *daemon* `dockerd`, que coordena a construção de imagens, inicia contêineres, gerencia volumes e redes e interage com os *registries*. O cliente e o *daemon* podem executar no mesmo *host* ou em *hosts* separados e se comunicam pela API do Docker.
 
 ```mermaid
 flowchart LR
@@ -37,13 +37,13 @@ flowchart LR
     RT --> K[Kernel Linux<br/>namespaces, cgroups, SELinux/AppArmor]
 ```
 
-## Imagens, Dockerfile e processo de build
+## Imagens, Dockerfile e processo de construção
 
-Uma **imagem** é um template somente leitura (`readonly`) para criar containers. Um **container** é a instância executável dessa imagem. Para montar uma imagem, escrevemos um **Dockerfile**, que é um documento com instruções como `FROM`, `WORKDIR`, `COPY`, `RUN` e `CMD`.
+Uma **imagem** é um modelo imutável usado para criar contêineres. Um **contêiner** é uma instância executável dessa imagem. Para construir uma imagem, escrevemos um **Dockerfile** com instruções como `FROM`, `WORKDIR`, `COPY`, `RUN` e `CMD`.
 
 As imagens são compostas por **camadas**. Cada instrução relevante do Dockerfile gera uma camada, e o cache de build reaproveita resultados anteriores quando a instrução e seus insumos continuam equivalentes. O comportamento mais importante é: **se uma camada muda, as camadas posteriores tendem a ser invalidadas também**. Por isso, a ordem do Dockerfile influencia diretamente a velocidade do build incremental.
 
-A documentação do Docker recomenda ordenar as camadas para colocar os passos caros e estáveis primeiro, reduzir o contexto com o `.dockerignore` e usar **cache mounts** para gerenciadores de pacotes. Em alguns cenários, recomenda também usar **bind mounts durante o build** para não poluir o cache com artefatos que não precisam entrar na imagem final. A recomendação estrutural é usar **multi-stage builds**, que separam o ambiente de build do ambiente final de runtime, reduzindo o tamanho da imagem.
+Para aproveitar o *cache*, colocamos etapas caras e estáveis antes das que mudam com frequência. Também podemos reduzir o contexto com `.dockerignore`, usar ***cache mounts*** para gerenciadores de pacotes e adotar **construções em múltiplos estágios** (*multi-stage builds*), que separam o ambiente de construção da imagem final.
 
 ```mermaid
 flowchart TD
@@ -72,7 +72,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install  --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
@@ -81,21 +81,21 @@ EXPOSE 8000
 CMD ["python", "app.py"]
 ```
 
-A opção `--no-cache-dir` desativa o uso do cache local ao instalar pacotes Python, forçando o download de arquivos diretamente do PyPI. Ela é fundamental para manter as imagens Docker leves, pois evita salvar arquivos de cache desnecessários.
+A opção `--no-cache-dir` impede que o `pip` mantenha seu cache de downloads na camada da imagem. Ela não desativa o *cache* de camadas do Docker nem determina qual índice será usado. Com BuildKit, um *cache mount* pode preservar o cache entre construções sem copiá-lo para a imagem final.
 
 Exemplo de build e inspeção:
 
 ```bash
-docker build -t my-api:1.0 . # Este ponto se refere ao Dockerfile
+docker build -t my-api:1.0 .
 docker image inspect my-api:1.0
 docker history my-api:1.0
 ```
 
-`docker build` recebe um contexto (`.`, neste caso, referindo-se ao diretório que contém o `Dockerfile`) e `docker inspect` retorna metadados em JSON sobre a imagem ou o container.
+`docker build` recebe um contexto de construção; nesse exemplo, `.` indica o diretório atual. Por padrão, o comando procura um arquivo chamado `Dockerfile` nesse contexto. `docker image inspect` retorna metadados JSON sobre a imagem.
 
 Geralmente, os comandos relacionados a imagens no Docker são executados com `docker image COMMAND`. Por meio da CLI, podemos digitar `docker image --help` para acessar o guia de ajuda.
 
-## Execução de containers
+## Execução de contêineres
 
 Quando fazemos `docker run`, ele baixa a imagem se ela ainda não existe localmente, cria o container, aloca a camada gravável final, configura a rede e então inicia o processo principal.
 
@@ -108,16 +108,16 @@ docker rm web
 
 Esses comandos cobrem o ciclo mais comum:
 
-- Criar e iniciar (`run`)
-- Entrar no container (`exec`)
-- Parar o container (`stop`)
-- Remover o container (`rm`)
+- Criar e iniciar (`run`).
+- Executar um comando no contêiner (`exec`).
+- Parar o contêiner (`stop`).
+- Remover o contêiner (`rm`).
 
 A publicação de portas é feita com `-p`.
 
-Persistência em Docker não deve ficar na camada gravável do container quando o dado precisa sobreviver à vida do processo. Para isso, o Engine oferece **volumes, bind mounts e tmpfs mounts**:
+Dados que precisam sobreviver à remoção do contêiner não devem depender de sua camada gravável. Para esses casos, o Docker Engine oferece **volumes, *bind mounts* e *tmpfs mounts***:
 
-| Tipo | Persiste após parar/remover container? | Onde vive | Melhor uso | Observações |
+| Tipo | Persiste após parar ou remover o contêiner? | Onde vive | Melhor uso | Observações |
 | :--- | :------------------------------------: | :-------: | :--------: | ----------: |
 | Named volume | Sim | Área gerenciada pelo Docker no host | Dados duráveis de aplicações, bancos e compartilhamentos entre containers | É o mecanismo preferido para persistência; o acesso direto ao diretório no host é desencorajado |
 | Bind mount | Sim, porque aponta para um caminho do host | Caminho escolhido no host | Código-fonte, configurações, artefatos e integração entre o ambiente de desenvolvimento e o host | Por padrão, é gravável e acopla o container à estrutura do host; pode ocultar conteúdo preexistente no destino |

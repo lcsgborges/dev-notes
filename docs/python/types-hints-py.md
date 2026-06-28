@@ -1,14 +1,13 @@
-# Type hints em Python (dicas de tipos ou anotações de tipo)
+# Anotações de tipo em Python
 
-> Ambiente com `python>=3.13`
+> Exemplos compatíveis com Python 3.13 ou superior.
 
-Por padrão, os _type hints_ não alteram o comportamento do interpretador do Python. Entretanto, são úteis para:
+O interpretador não usa as anotações para impor os tipos de argumentos e variáveis. Elas servem principalmente a ferramentas de análise estática, editores e leitores do código:
 
-- Permitir que ferramentas como `mypy` ou `Pyright` encontrem erros antes da execução
-- Ativar o preenchimento automático inteligente e exibir documentação nos editores
-- Ajudar a entender o código
-- Evitar erros simples (por exemplo, passar `int` onde era esperado `str`)
-- Melhorar a legibilidade do código, como se fosse uma documentação automática
+- Permitir que ferramentas como `mypy` e Pyright encontrem incompatibilidades antes da execução.
+- Melhorar o preenchimento automático e a documentação exibida pelos editores.
+- Registrar as expectativas da interface do código.
+- Detectar erros simples, como passar um `int` quando a função espera uma `str`.
 
 ## Tipos básicos
 
@@ -22,10 +21,10 @@ data: bytes = b"weather"
 
 ## Constantes
 
-Constantes não costumam ser reatribuídas, então a anotação explícita de tipo pode ser redundante. O próprio valor já deixa claro o tipo:
+Python não impede a reatribuição de uma variável apenas porque seu nome está em letras maiúsculas; essa escrita é uma convenção. Quando a anotação explícita não acrescenta informação, podemos deixar que a ferramenta infira o tipo:
 
 ```python
-CONSTANT = "any value"  # CONSTANTE: Literal["any value"]
+CONSTANT = "qualquer valor"
 ```
 
 ## Coleções
@@ -50,12 +49,14 @@ anything: object = "123"
 any_type: type = int
 ```
 
-## Constantes com Final
+## Constantes com `Final`
 
-`Final` informa aos verificadores de tipo que a variável ou constante não deve ser reatribuída:
+`Final` informa aos verificadores de tipo que o nome não deve ser reatribuído. Essa restrição não é aplicada durante a execução:
 
 ```python
 from typing import Final
 
 CONSTANT_FINAL: Final[list[str]] = ["a", "b", "c"]
 ```
+
+`Final` impede apenas a reatribuição do nome para o verificador estático; ele não torna imutável uma coleção mutável. Nesse exemplo, ainda é possível alterar o conteúdo da lista durante a execução.
