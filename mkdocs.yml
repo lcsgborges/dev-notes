@@ -35,6 +35,7 @@ nav:
               - File Descriptors: c/processos/fd.md
               - Fork: c/processos/fork.md
               - Signals: c/processos/signals.md
+              - Pipes: c/processos/pipes.md
           - OpenMP: c/openmp.md
       - Go:
           - Primeiros Passos: go/go.md
