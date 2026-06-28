@@ -36,6 +36,7 @@ nav:
               - Fork: c/processos/fork.md
               - Signals: c/processos/signals.md
               - Pipes: c/processos/pipes.md
+              - FIFOs: c/processos/fifos.md
           - Arquivos em C: c/arquivos.md
           - OpenMP: c/openmp.md
       - Go:
