@@ -37,6 +37,8 @@ nav:
               - Sinais: c/processos/signals.md
               - Pipes: c/processos/pipes.md
               - FIFOs: c/processos/fifos.md
+              - Message Queues: c/processos/message_queues.md
+              - Sockets: c/processos/sockets.md
           - Arquivos em C: c/arquivos.md
           - OpenMP: c/openmp.md
       - Go:
