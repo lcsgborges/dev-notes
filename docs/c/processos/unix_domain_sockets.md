@@ -1,6 +1,6 @@
 # Unix Domain Sockets
 
-**Unix Domain Sockets** é uma forma de comunicação entre processos que estão na mesma máquina, resumindo, é um tipo de **IPC**.
+**Unix Domain Sockets** é uma forma de comunicação entre processos que estão na **mesma máquina**, resumindo, é um tipo de **IPC**.
 
 Ele funciona como um canal de comunicação **bidirecional**, controlado pelo kernel, representado por *file descriptors*.
 
@@ -15,6 +15,167 @@ Um **pipe** é um canal de comunicação unidirecional (só tem uma direção). 
 - cliente pergunta e servidor responde
 - cliente envia comando e servidor confirma
 - processo A manda dados e processo B devolve resultado
+
+## Endereços de socket
+
+As estruturas `sockaddr`, `sockaddr_un`, `sockaddr_in`, `sockaddr_in6` e `sockaddr_storage` **não são o socket em si, elas representam os endereços de socket**.
+
+A estrutura `sockaddr_*` é o **endereço usado para localizar ou identificar uma ponta desse canal**.
+
+- **socket**: o canal de comunicação
+- **endereço de socket**: onde esse canal pode ser encontrado
+
+Exemplo com Unix Domain Socket -> socket local: `/tmp/app.sock`.
+
+Exemplo com IPv4 -> socket de rede: `192.168.0.10:8000`.
+
+Exemplo com IPv6 -> socket de rede: `2804:abcd::1:8080`.
+
+### Por que utilizar várias estruturas
+
+Uma conexão feita com Unix Domain Socket é diferente de uma conexão feita com IPv4 que também é diferente de uma conexão feita com IPv6. Dessa forma, as estruturas são especializadas:
+
+- `sockaddr_un`: endereço local unix (Unix Domain Socket)
+- `sockaddr_in`: endereço IPv4
+- `sockaddr_in6`: endereço IPv6
+
+Mas as funções do sistema **precisam aceitar qualquer uma delas**, essa estrutura genérica é a `sockaddr`.
+
+> Dá pra pensar que `sockaddr` seria a classe abstrata e as outras implementam ela com suas características.
+
+A API de sockets usa funções genéricas como:
+
+- `bind()`
+- `connect()`
+- `accept()`
+- `sendto()`
+- `recvfrom()`
+
+Essas funções não querem saber, diretamente, se estamos Unix Domain Sockets, IPv4 ou IPv6. Logo, elas recebem um **ponteiro genérico**:
+
+```c
+struct sockaddr *
+```
+
+Exemplo:
+
+```c
+bind(fd, (struct sockaddr *) &addr, sizeof(addr));
+```
+
+Mas `addr` pode ser `sockaddr_un`, `sockaddr_in` ou outro.
+
+O importante aqui é saber que todas elas começam com um campo que informa a **família do endereço**.
+
+### Família de endereço
+
+Cada estrutura tem um campo de família. No genérico: `sa_family`, nos demais:
+
+- Unix Domain Socket: `sun_family`
+- IPv4: `sin_family`
+- IPv6: `sin6_family`
+
+Elas indicam coisas como:
+
+- `AF_UNIX`: endereço local Unix
+- `AF_INET`: endereço IPv4
+- `AF_INET6`: endereço IPv6
+
+Então quando o kernel recebe um `struct sockaddr *`, ele olha primeiro a família. Exemplo do que o kernel faz:
+
+1. "Recebi um endereço"
+2. "Primeiro campo diz `AF_UNIX`"
+3. "Então vou interpretar o restante como `sockaddr_un`
+
+### A estrutura genérica `sockaddr`
+
+A estrutura genérica é mais ou menos assim:
+
+```c
+#include <sys/socket.h>
+
+struct sockaddr {
+    sa_family_t sa_family; // Família de endereços (ex: AF_INET)
+    char        sa_data[14]; // 14 bytes para o endereço (ex: /tmp/app.sock)
+}
+```
+
+- `sa_family_t`: família do endereço (`AF_UNIX`, `AF_INET`, ...)
+- `sa_data`: espaço genérico para dados (`"/tmp/app.sock"`)
+
+Na prática, quase nunca preenchemos `sa_data` diretamente.
+
+### A função bind
+
+A função `bind()` recebe:
+
+```c
+#include <sys/socket.h>
+
+int bind(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+```
+
+Mas normalmente passamos uma outra estrutura convertida com *cast*.
+
+### Ponto de compatibilidade
+
+As estruturas são desenhadas para começarem de forma compatível:
+
+#### `struct sockaddr`
+
+```c
+struct sockaddr {
+    sa_family_t sa_family;
+    char        sa_data[];
+}
+```
+
+#### `sockaddr_un`
+
+```c
+struct sockaddr_un {
+    sa_family_t sun_family;  // Address family (AF_UNIX)
+    char        sun_path[];  // Socket pathname
+}
+```
+
+Exemplo:
+
+```c
+struct sockaddr_un addr;
+
+memset(&addr, 0, sizeof(addr));
+
+addr.sun_family = AF_UNIX;
+strncpy(addr.sun_path, "/tmp/app.sock", sizeof(addr.sun_path) -1);
+```
+
+O exemplo acima representa o **endereço** `"/tmp/app.sock"` usado por um Unix Domain Socket.
+
+> Como funciona `strncpy()`: serve para copiar um número específico de caracteres de uma string para uma string de destino sem estouro de buffer. Se o tamanho de caracteres da origem for menor que o tamanho estipulado, `strncpy` preenche o restante com `'\0'`.
+
+#### `sockaddr_in`
+
+```c
+struct sockaddr_in {
+    sa_family_t    sin_family; // AF_INET
+    in_port_t      sin_port;   // Port number
+    struct in_addr sin_addr;   // IPv4 address
+}
+```
+
+#### `sockaddr_in6`
+
+```c
+struct sockaddr_in6 {
+    sa_family_t     sin6_family;    // AF_INET6 
+    in_port_t       sin6_port;      // Port number
+    uint32_t        sin6_flowinfo;  // IPv6 flow info
+    struct in6_addr sin6_addr;      // IPv6 address 
+    uint32_t        sin6_scope_id;  // Set of interfaces for a scope
+}
+```
+
 
 ## Socketpair
 
@@ -159,7 +320,7 @@ Servidor Unix Domain Socket usa:
 - `socket()`: cria uma ponta de comunicação (tomada)
 - `bind()`: dá um nome local para a ponta, exemplo `/tmp/app.sock`
 - `listen()`: diz "agora estou aceitando conexões"
-- `accept()`: espera um cliente conectar e cria uma conexão com ele
+- `accept()`: espera um cliente conectar e cria um socket específico para ele
 - `read()`: escreve no arquivo
 - `write()`: lê do arquivo
 - `close()`: fecha descritores
