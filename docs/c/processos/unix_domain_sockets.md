@@ -154,6 +154,28 @@ O exemplo acima representa o **endereço** `"/tmp/app.sock"` usado por um Unix D
 
 > Como funciona `strncpy()`: serve para copiar um número específico de caracteres de uma string para uma string de destino sem estouro de buffer. Se o tamanho de caracteres da origem for menor que o tamanho estipulado, `strncpy` preenche o restante com `'\0'`.
 
+##### Exemplo: preparando um endereço Unix
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <sys/un.h>
+
+int main(void) {
+    struct sockaddr_un addr;
+    
+    memset(&addr, 0, sizeof(addr));
+
+    addr.sun_family = AF_UNIX;
+    strncpy(addr.sun_path, "/tmp/app.sock", sizeof(addr.sun_path) -1);
+
+    printf("Família: %d\n", addr.sun_family);
+    printf("Caminho: %s\n", addr.sun_path);
+    
+    return 0;
+}
+```
+
 #### `sockaddr_in`
 
 ```c
@@ -163,6 +185,20 @@ struct sockaddr_in {
     struct in_addr sin_addr;   // IPv4 address
 }
 ```
+
+Seria representado com:
+
+```c
+addr.sin_family = AF_INET;
+addr.sin_port = htons(8080);
+addr.sin_addr = ...
+```
+
+A função `htons()` (*Host to Network Short*) converte um inteiro curto de 16 bits da ordem de bytes nativa do seu processador (**Host**) para a ordem de bytes padronizada utilizada nas redes TCP/IP (*Network Byte Order*), que é sempre **big-endian**.
+
+Diferentes processadores armazenam números de forma diferente. Por exemplo, processadores Intel x86 são **little-endian** (o byte menos significativo vem primeiro). Já a internet usa o formato *big-endian* como padrão universal.
+
+Portanto, essa função `htons()` inverte a ordem dos bytes apenas se o seu sistema for *little-endian*, em sistemas nativamente *big-endian*, ela não faz nada.
 
 #### `sockaddr_in6`
 
@@ -176,6 +212,79 @@ struct sockaddr_in6 {
 }
 ```
 
+#### `sockaddr_storage`
+
+Imagine que precisamos receber um endereço que não sabemos antes qual será, dessa forma, precisamos de um espaço grande o suficiente para qualquer endereço. É aí que entra o `sockaddr_storage`, servindo como um "reservatório seguro" para armazenar qualquer tipo de endereço. Exemplo:
+
+```c
+struct sockaddr_storage addr;
+socklen_t len = sizeof(addr);
+```
+
+Depois passamos para uma função que preenche o endereço:
+
+```c
+accept(fd, (struct sockaddr *) &addr, &len);
+```
+
+Depois podemos verificar a família:
+
+```c
+struct sockaddr *sa = (struct sockaddr *) &addr;
+
+if (sa->sa_family == AF_UNIX) {
+    // Endereço Unix
+} else if (sa->sa_family == AF_INET) {
+    // Endereço IPv4
+} else if (sa->sa_family == AF_INET6) {
+    // Endereço IPv6
+}
+```
+
+### Tabela de resumo
+
+| Estrutura | Família | Uso | Guarda |
+| :-------: | :-----: | :-: | :----: |
+| `struct sockaddr` | Genérica | Base das APIs | Família + bytes genéricos |
+| `struct sockaddr_un` | `AF_UNIX` | IPC Local | Caminho, como `/tmp/app.sock` |
+| `struct sockaddr_in` | `AF_INET` | IPv4 | Porta + IP de 32 bits |
+| `struct sockaddr_in6` | `AF_INET6` | IPv6 | Porta + IP de 128 bits |
+| `struct sockaddr_storage` | Qualquer | Código genérico | Espaço grande o suficiente |
+
+### Por que passar o tamanho no `bind()`?
+
+Usamos o `sizeof(addr)` no `bind()` porque o ponteiro geralmente é convertido para o tipo genérico `(struct sockaddr *)`. Depois do cast, a função não sabe sozinha qual era o tamanho real da estrutura original. Exemplo:
+
+```c
+struct sockaddr_un addr;
+
+bind(fd, (struct sockaddr *) &addr, sizeof(addr));
+```
+
+Aqui estamos dizendo que o endereço é genérico para a API, mas o tamanho real dele é `sizeof(struct sockaddr_un)`.
+
+### Por que usamos `memset()`?
+
+Algumas estruturas possuem campos extras ou padding. Zerar tudo evita lixo de memória em campos não preenchidos:
+
+```c
+struct sockaddr_un addr;
+
+memset(&addr, 0, sizeof(addr));
+
+addr.sun_family = AF_UNIX;
+strncpy(addr.sun_path, "/tmp/app.sock", sizeof(addr.sun_path) -1);
+```
+
+### Por que usar `strncpy()` em `sun_path()`?
+
+Porque `sun_path` tem tamanho limitado. Normalmente algo como `char sun_path[108]`. Se fizermos:
+
+```c
+strcpy(addr.sun_path, path);
+```
+
+E o `path` for grande demais, pode estourar o buffer. Então usamos `strncpy()`. Como a estrutura foi zerada usando o `memset()`, o final continua `'\0'`.
 
 ## Socketpair
 
@@ -417,3 +526,92 @@ int main() {
     return 0;
 }
 ```
+
+### Cliente Unix Domain Socket
+
+Arquivo: `client.c`
+
+```c
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/socket.h>
+#include <sys/un.h>
+
+#define SOCKET_PATH "/tmp/my_socket.sock"
+#define BUFFER_SIZE 1024
+
+int main(void) {
+    int sockfd = socket(AF_UNIX, SOCK_STREAM, 0);
+
+    if (sockfd == -1) {
+        perror("socket");
+        return 1;
+    }
+
+    struct sockaddr_un addr;
+    memset(&addr, 0, sizeof(addr));
+
+    addr.sun_family = AF_UNIX;
+    strncpy(addr.sun_path, SOCKET_PATH, sizeof(addr.sun_path) -1);
+
+    if (connect(sockfd, (struct sockaddr *) &addr, sizeof(addr)) == -1) {
+        perror("connect");
+        close(sockfd);
+        return 1;
+    }
+
+    const char *msg = "Olá servidor";
+
+    write(sockfd, msg, strlen(msg));
+
+    char buffer[BUFFER_SIZE];
+
+    ssize_t n = read(sockfd, buffer, sizeof(buffer) -1);
+
+    if (n == -1) {
+        perror("read");
+        close(sockfd);
+        return 1;
+    }
+
+    buffer[n] = '\0';
+
+    printf("Resposta: %s\n", buffer);
+
+    close(sockfd);
+    return 0;
+}
+```
+
+- `AF_UNIX`: família de endereço local/Unix
+- `SOCK_STREAM`: canal conectado, bidirecional, de fluxo de bytes
+
+## Arquivo `.sock`
+
+Quando o servidor acima estiver rodando, podemos verificar ele:
+
+```bash
+ls -l /tmp/my_socket.sock
+```
+
+Pode aparecer algo como:
+
+```text
+srwxr-xr-x 1 ...
+```
+
+Esse `s` no ínicio é de `socket`. **Não** é arquivo de texto. **Não** é arquivo binário comum. **Não** é onde os dados ficam salvos. **É um ponto de encontro**.
+
+## Onde é usado
+
+Exemplos comuns:
+
+- Docker usa `/var/run/docker.sock`
+- PostgreSQL pode aceitar conexão local via Unix socket
+- Nginx pode falar com backend por Unix socket
+- daemons locais expõem comandos via Unix socket
+
+A frase central é:
+
+**Unix Domain Socket é como uma "tomada local" onde um processo servidor fica escutando, e processos clientes conectam para trocar dados com ele, tudo dentro da mesma máquina.**
